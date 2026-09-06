@@ -283,6 +283,47 @@ var CloudSync = (typeof window !== "undefined" && window.CloudSync) ? window.Clo
     return null;
   },
 
+
+  // 删除云端档案
+  async deleteCase(code) {
+    if (!this.isConfigured() || !code) return { success: false, reason: "unconfigured" };
+    const cfg = this.getConfig();
+    try {
+      if (cfg.provider === "supabase") {
+        const baseUrl = cfg.supabaseUrl.replace(/\/rest\/v1\/?$/, "").replace(/\/+$/, "");
+        const key = cfg.supabaseKey;
+        await fetch(baseUrl + "/rest/v1/mxl_cases?code=eq." + encodeURIComponent(code), {
+          method: "DELETE",
+          headers: {
+            "apikey": key,
+            "Authorization": "Bearer " + key
+          }
+        });
+        return { success: true };
+      } else if (cfg.provider === "leancloud") {
+        const appId = cfg.appId;
+        const appKey = cfg.appKey;
+        const serverUrl = (cfg.serverURL || "").replace(/\/+$/, "") || ("https://" + appId.slice(0, 8) + ".api.lncldglobal.com");
+        const queryRes = await fetch(serverUrl + "/1.1/classes/MxlCase?where=" + encodeURIComponent(JSON.stringify({ code: code })), {
+          headers: { "X-LC-Id": appId, "X-LC-Key": appKey }
+        });
+        if (queryRes.ok) {
+          const qJson = await queryRes.json();
+          if (qJson.results && qJson.results[0] && qJson.results[0].objectId) {
+            await fetch(serverUrl + "/1.1/classes/MxlCase/" + qJson.results[0].objectId, {
+              method: "DELETE",
+              headers: { "X-LC-Id": appId, "X-LC-Key": appKey }
+            });
+          }
+        }
+        return { success: true };
+      }
+    } catch(e) {
+      console.warn("Cloud delete failed:", e);
+      return { success: false, error: e.message };
+    }
+  },
+
   // 测试云端配置连接状态
   async testConnection(testCfg) {
     const cfg = testCfg || this.getConfig();
