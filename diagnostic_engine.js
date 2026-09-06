@@ -336,7 +336,7 @@ function generateRadarSVG(scoresMap, size = 260) {
     const lx = cx + (radius + 24) * Math.cos(a);
     const ly = cy + (radius + 18) * Math.sin(a);
     const sVal = scoresMap[dims[i].id] || 0;
-    labelsSvg += '<text x="' + lx.toFixed(1) + '" y="' + ly.toFixed(1) + '" font-size="10.5" font-weight="bold" fill="#334155" text-anchor="middle" dominant-baseline="central">' + dims[i].name + ' ' + sVal + '分</text>';
+    labelsSvg += '<text x="' + lx.toFixed(1) + '" y="' + ly.toFixed(1) + '" font-size=\"12\" font-weight=\"bold\" fill=\"#1E293B\" text-anchor="middle" dominant-baseline="central">' + dims[i].name + ' ' + sVal + '分</text>';
   }
 
   let dataPoints = [];
@@ -404,7 +404,7 @@ function generateDualRadarSVG(husbandScores, wifeScores, size) {
 
     var lx = cx + (radius + 25) * Math.cos(a);
     var ly = cy + (radius + 18) * Math.sin(a);
-    labelsSvg += '<text x="' + lx.toFixed(1) + '" y="' + ly.toFixed(1) + '" font-size="10" font-weight="bold" fill="#334155" text-anchor="middle" dominant-baseline="central">' + dims[i].name + '</text>';
+    labelsSvg += '<text x="' + lx.toFixed(1) + '" y="' + ly.toFixed(1) + '" font-size=\"11.5\" font-weight=\"bold\" fill=\"#1E293B\" text-anchor="middle" dominant-baseline="central">' + dims[i].name + '</text>';
   }
 
   var hPoints = [];
@@ -435,9 +435,9 @@ function generateDualRadarSVG(husbandScores, wifeScores, size) {
 
   var legend = '<g transform="translate(' + (cx - 75) + ', 12)">' +
     '<circle cx="0" cy="0" r="4" fill="#2563EB"/>' +
-    '<text x="7" y="3" font-size="9.5" font-weight="bold" fill="#2563EB">👨 丈夫得分</text>' +
+    '<text x="7" y="3" font-size=\"11\" font-weight=\"bold\" fill="#2563EB">👨 丈夫得分</text>' +
     '<circle cx="78" cy="0" r="4" fill="#BE185D"/>' +
-    '<text x="85" y="3" font-size="9.5" font-weight="bold" fill="#BE185D">👩 妻子得分</text>' +
+    '<text x="85" y="3" font-size=\"11\" font-weight=\"bold\" fill="#BE185D">👩 妻子得分</text>' +
     '</g>';
 
   return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" style="max-width:100%; height:auto;">' +

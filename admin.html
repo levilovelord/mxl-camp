@@ -429,21 +429,21 @@
     @media print {
       @page {
         size: A4 portrait;
-        margin: 8mm 10mm 8mm 10mm; /* 彻底规避默认页眉页脚 */
+        margin: 6mm 10mm 6mm 10mm; /* 专为手机屏幕阅读优化的紧凑边距 */
       }
-      /* 禁止浏览器插入自带页眉页脚网址和时间 */
       body {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
       body, html {
         background: #FFFFFF !important;
-        color: #000000 !important;
+        color: #0F172A !important;
         margin: 0 !important;
         padding: 0 !important;
-        font-size: 10pt;
+        font-size: 13.5pt;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
       }
       .header-bar, .toolbar-card, .family-profile-banner, .section-tabs, #auth-overlay, .btn, .no-print, #main-content {
         display: none !important;
@@ -459,7 +459,7 @@
         margin: 0;
         box-sizing: border-box;
         background: #FFF;
-        min-height: 270mm;
+        min-height: 272mm;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -472,23 +472,21 @@
         page-break-inside: avoid !important;
         break-inside: avoid !important;
       }
-      /* 表格边框与打印保真 */
-      /* 表格边框与打印保真 */
       .pdf-table {
         width: 100%;
         border-collapse: collapse;
-        margin: 12px 0;
+        margin: 8px 0;
       }
       .pdf-table th, .pdf-table td {
-        border: 1px solid #94A3B8;
-        padding: 8px 10px;
-        font-size: 10pt;
+        border: 1px solid #CBD5E1;
+        padding: 6px 10px;
+        font-size: 12pt;
         text-align: left;
       }
       .pdf-table th {
-        background-color: #F1F5F9 !important;
+        background-color: #F8FAFC !important;
         -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
+        font-weight: bold;
       }
     }
   </style>
@@ -2146,43 +2144,43 @@ function exportA4Report(type) {
       scoresList.push({ dim, score, diag, dimQs });
     });
 
-    // 严格按得分升序排列（问题严重、低分的排在最前面！）
+    // 严格按得分升序排列（问题最严重的排在最前面！）
     scoresList.sort((a, b) => a.score - b.score);
 
-    const radarSvg = generateRadarSVG(scoresMap, 220);
+    const radarSvg = generateRadarSVG(scoresMap, 230);
     const strengths = extractRelationshipStrengths(ans);
 
-    // 生成 P1 紧凑得分表
+    // P1 六维全貌得分表（手机大字版）
     let scoreRowsHtml = '';
     scoresList.forEach((item, idx) => {
       let tagBg = item.score >= 80 ? '#DCFCE7' : (item.score >= 55 ? '#FEF3C7' : '#FEE2E2');
       let tagColor = item.score >= 80 ? '#166534' : (item.score >= 55 ? '#92400E' : '#991B1B');
 
       scoreRowsHtml += `
-        <tr style="height:23px;">
-          <td style="font-weight:bold; font-size:8.5pt; color:#78350F; padding:3px 8px;">
-            <span style="font-size:7.5pt; background:#E2E8F0; color:#475569; padding:1px 4px; border-radius:3px; margin-right:4px;">#${idx + 1}</span>
+        <tr style="height:32px;">
+          <td style="font-weight:bold; font-size:13.5pt; color:#78350F; padding:6px 10px;">
+            <span style="font-size:11pt; background:#E2E8F0; color:#475569; padding:2px 6px; border-radius:4px; margin-right:6px;">#${idx + 1}</span>
             ${item.dim.name}
           </td>
-          <td style="font-size:8pt; color:#475569; padding:3px 8px;">${item.dim.desc}</td>
-          <td style="font-weight:bold; font-size:9pt; text-align:center; color:#0F172A; padding:3px 8px;">${item.score}分</td>
-          <td style="text-align:center; padding:3px 8px;">
-            <span style="background:${tagBg}; color:${tagColor}; font-size:7.5pt; font-weight:bold; padding:2px 5px; border-radius:4px;">${item.diag.levelText.split(' ')[0]}</span>
+          <td style="font-size:12pt; color:#475569; padding:6px 10px;">${item.dim.desc}</td>
+          <td style="font-weight:800; font-size:14pt; text-align:center; color:#0F172A; padding:6px 10px;">${item.score}分</td>
+          <td style="text-align:center; padding:6px 10px;">
+            <span style="background:${tagBg}; color:${tagColor}; font-size:12pt; font-weight:bold; padding:4px 8px; border-radius:6px;">${item.diag.levelText.split(' ')[0]}</span>
           </td>
         </tr>
       `;
     });
 
-    // P2: 守护基石卡片
+    // P2 守护基石卡片（手机大字版）
     let strengthsCardsHtml = strengths.map((s, idx) => `
-      <div class="avoid-break" style="background:#F0FDF4; border:1px solid #BBF7D0; border-left:4px solid #16A34A; border-radius:6px; padding:10px 14px; margin-bottom:12px;">
-        <b style="color:#15803D; font-size:10pt; display:block; margin-bottom:4px;">${idx + 1}. ${s.title}</b>
-        <div style="font-size:8.5pt; color:#166534; line-height:1.65;">${s.desc}</div>
+      <div style="background:#F0FDF4; border:1.5px solid #BBF7D0; border-left:5px solid #16A34A; border-radius:8px; padding:12px 16px; margin-bottom:12px;">
+        <b style="color:#15803D; font-size:15.5pt; display:block; margin-bottom:6px;">${idx + 1}. ${s.title}</b>
+        <div style="font-size:13.5pt; color:#166534; line-height:1.7;">${s.desc}</div>
       </div>
     `).join('');
 
-    // 辅助函数：渲染单个维度卡片（黄金三段式结构，紧凑无瑕疵）
-    function renderDimCardHtml(item, rankIdx) {
+    // 单个维度整页大字排版（一页一维，手机阅读极佳体验）
+    function renderSingleDimPageHtml(item, rankIdx, pageNum) {
       const dim = item.dim;
       const score = item.score;
       const diag = item.diag;
@@ -2196,8 +2194,8 @@ function exportA4Report(type) {
         const evalScore = isRev ? (6 - rawVal) : rawVal;
         qListHtml += `
           <tr>
-            <td style="width:68%; font-size:9pt; padding:3px 6px; color:#334155;">${q.id}. ${q.text}</td>
-            <td style="width:32%; font-weight:bold; text-align:center; font-size:8.5pt; padding:3px 6px;">
+            <td style="width:68%; font-size:13pt; padding:6px 10px; color:#334155; line-height:1.45;">${q.id}. ${q.text}</td>
+            <td style="width:32%; font-weight:bold; text-align:center; font-size:13pt; padding:6px 10px; background:#F8FAFC; color:#0F172A;">
               ${getOptionLabel(rawVal)}${isRev ? '*' : ''} ｜ 计分：${evalScore}分
             </td>
           </tr>
@@ -2205,33 +2203,49 @@ function exportA4Report(type) {
       });
 
       return `
-        <div class="avoid-break" style="margin-bottom:10px; border:1px solid #CBD5E1; border-left:4px solid ${diag.levelColor}; border-radius:6px; padding:9px 12px; background:#FFF;">
-          <div style="display:flex; justify-content:space-between; border-bottom:1px solid #E2E8F0; padding-bottom:4px; margin-bottom:6px;">
-            <b style="font-size:11pt; color:#78350F;">
-              维度 ${rankIdx}：${dim.name} (${score}分)
-              <span style="font-size:8pt; color:#64748B; font-weight:normal; margin-left:4px;">(${dim.desc})</span>
-            </b>
-            <b style="font-size:10.5pt; color:#0F172A;">${score}分</b>
+        <div class="pdf-page">
+          <div>
+            <div style="border-bottom:1.5px solid #CBD5E1; padding-bottom:6px; margin-bottom:12px; display:flex; justify-content:space-between; font-size:12pt; color:#64748B;">
+              <span>慕喜乐夫妻营 · 临床维度深度觉察【维度 ${rankIdx} / 共 6 维】</span>
+              <span>档案编号：${code}</span>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #E2E8F0; padding-bottom:8px; margin-bottom:12px;">
+              <div>
+                <b style="font-size:21pt; color:#78350F; letter-spacing:0.5px;">维度 ${rankIdx}：${dim.name}</b>
+                <span style="font-size:13.5pt; color:#64748B; margin-left:8px;">(${dim.desc})</span>
+              </div>
+              <span style="font-size:15pt; font-weight:800; background:${diag.levelColor}; color:#FFF; padding:4px 14px; border-radius:20px;">
+                ${score}分 · ${diag.levelText}
+              </span>
+            </div>
+
+            <div style="margin-bottom:12px;">
+              <div style="background:#FFF7ED; border-left:5px solid #EA580C; padding:12px 16px; border-radius:0 8px 8px 0; margin-bottom:12px; color:#9A3412;">
+                <b style="font-size:14.5pt; color:#C2410C; display:block; margin-bottom:5px;">【日常相处真实写照】：</b>
+                <div style="font-size:14pt; line-height:1.8;">${diag.behaviorPhenomenon}</div>
+              </div>
+
+              <div style="background:#EFF6FF; border-left:5px solid #2563EB; padding:12px 16px; border-radius:0 8px 8px 0; margin-bottom:12px; color:#1E40AF;">
+                <b style="font-size:14.5pt; color:#1D4ED8; display:block; margin-bottom:5px;">【藏在背后的心理机制】：</b>
+                <div style="font-size:14pt; line-height:1.8;">${diag.psychologicalDefense}</div>
+              </div>
+            </div>
+
+            <div style="font-size:13pt; font-weight:bold; color:#334155; margin:10px 0 5px;">📋 原始 6 题选择与健康计分明细：</div>
+            <table class="pdf-table" style="margin:4px 0 12px;">
+              <thead><tr style="background:#F8FAFC;"><th style="padding:6px 10px; font-size:12.5pt;">评估题目</th><th style="width:160px; text-align:center; padding:6px 10px; font-size:12.5pt;">选项与计分</th></tr></thead>
+              <tbody>${qListHtml}</tbody>
+            </table>
+
+            <div style="background:#FFFBEB; border:1.5px dashed #FCD34D; padding:12px 16px; border-radius:8px; margin-top:8px;">
+              <b style="font-size:14.5pt; color:#92400E; display:block; margin-bottom:5px;">💬 直击内心的反思提问（${roleName}视角）：</b>
+              <div style="font-size:14pt; color:#78350F; line-height:1.8; font-style:italic;">${diag.coreInquiry}</div>
+            </div>
           </div>
 
-          <div style="font-size:9.5pt; line-height:1.65; margin-bottom:8px;">
-            <div style="background:#FFF7ED; border-left:3px solid #EA580C; padding:4px 8px; border-radius:0 4px 4px 0; margin-bottom:5px; color:#9A3412;">
-              <b>【日常相处真实写照】：</b>${diag.behaviorPhenomenon}
-            </div>
-            <div style="background:#EFF6FF; border-left:3px solid #2563EB; padding:4px 8px; border-radius:0 4px 4px 0; margin-bottom:5px; color:#1E40AF;">
-              <b>【藏在背后的心理机制】：</b>${diag.psychologicalDefense}
-            </div>
-            
-          </div>
-
-          <table class="pdf-table" style="margin:2px 0 4px;">
-            <thead><tr style="background:#F8FAFC;"><th style="padding:3px 6px; font-size:8.5pt;">评估题目</th><th style="width:140px; text-align:center; padding:3px 6px; font-size:8.5pt;">选项与计分</th></tr></thead>
-            <tbody>${qListHtml}</tbody>
-          </table>
-
-          <div style="background:#FFFBEB; border:1px dashed #FCD34D; padding:5px 8px; border-radius:5px; font-size:9pt; color:#78350F; line-height:1.6;">
-            <b>💬 直击内心的反思提问（${roleName}视角）：</b>
-            <div style="margin-top:2px;">${diag.coreInquiry}</div>
+          <div style="font-size:11pt; color:#94A3B8; text-align:center; border-top:1px solid #E2E8F0; padding-top:6px;">
+            慕喜乐夫妻营 · 专业亲密关系成长体系 ｜ 官方咨询微信：wymone3 ｜ 第 ${pageNum} 页 / 共 10 页
           </div>
         </div>
       `;
@@ -2241,230 +2255,192 @@ function exportA4Report(type) {
       <!-- ================= P1: 封面、档案与六维雷达总览 ================= -->
       <div class="pdf-page">
         <div>
-          <div style="text-align:center; border-bottom:2px solid #78350F; padding-bottom:8px; margin-bottom:12px;">
-            <h1 style="font-size:16pt; color:#78350F; margin:0 0 3px 0; letter-spacing:0.5px;">慕喜乐夫妻营 · 婚姻关系深度体检报告</h1>
-            <div style="font-size:10.5pt; color:#475569; font-weight:bold;">【${roleName}视角 · 婚姻深度觉察报告】</div>
-            <div style="font-size:7.5pt; color:#94A3B8; margin-top:2px;">档案编号：${code} ｜ 测评日期：${new Date().toLocaleDateString()}</div>
+          <div style="text-align:center; border-bottom:2.5px solid #78350F; padding-bottom:10px; margin-bottom:14px;">
+            <h1 style="font-size:24pt; color:#78350F; margin:0 0 6px 0; letter-spacing:0.8px;">慕喜乐夫妻营 · 婚姻关系深度体检报告</h1>
+            <div style="font-size:15pt; color:#334155; font-weight:bold;">【${roleName}视角 · 婚姻深度觉察报告】</div>
+            <div style="font-size:11pt; color:#64748B; margin-top:4px;">档案编号：${code} ｜ 测评日期：${new Date().toLocaleDateString()}</div>
           </div>
 
-          <div style="background:#F8FAFC; border:1px solid #CBD5E1; padding:8px 12px; border-radius:6px; margin-bottom:12px; font-size:8.5pt; line-height:1.55;">
-            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px 10px; margin-bottom:6px;">
+          <div style="background:#F8FAFC; border:1.5px solid #CBD5E1; padding:10px 14px; border-radius:8px; margin-bottom:12px; font-size:12.5pt; line-height:1.6;">
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px 12px; margin-bottom:6px;">
               <div><b>受测角色：</b>${roleName} (${p.age || '-'}岁)</div>
               <div><b>结婚时间：</b>${marriage}</div>
               <div><b>子女情况：</b>${children}</div>
               <div><b>联系方式：</b>${p.phone || '-'}</div>
               <div><b>完成题数：</b>全项 36 题已封存</div>
-              <div><b>排版结构：</b>承压紧迫度升序</div>
+              <div><b>排版模式：</b>手机深度阅读版</div>
             </div>
-            <div style="border-top:1px dashed #E2E8F0; padding-top:4px; font-size:8pt; color:#64748B;">
+            <div style="border-top:1px dashed #CBD5E1; padding-top:6px; font-size:12pt; color:#475569;">
               📌 <b>家庭生命周期背景画像：</b>处于婚龄【${marriage}】、子女【${children}】阶段。属于典型的成熟家庭期，夫妻常年聚焦家庭运转，容易出现事务分工替代情感交流的惯性，是重启二人亲密同盟的黄金重塑期。
             </div>
           </div>
 
-          <div style="display:flex; justify-content:center; margin-bottom:8px;">
+          <div style="display:flex; justify-content:center; margin-bottom:10px;">
             ${radarSvg}
           </div>
 
-          <table class="pdf-table" style="margin:2px 0 10px;">
+          <table class="pdf-table" style="margin:4px 0 12px;">
             <thead>
-              <tr style="background:#F1F5F9; height:24px;">
-                <th style="width:26%; padding:3px 8px; font-size:8.5pt;">评估维度</th>
-                <th style="width:44%; padding:3px 8px; font-size:8.5pt;">心理学测查核心</th>
-                <th style="width:14%; text-align:center; padding:3px 8px; font-size:8.5pt;">得分</th>
-                <th style="width:16%; text-align:center; padding:3px 8px; font-size:8.5pt;">状态等级</th>
+              <tr style="background:#F1F5F9; height:30px;">
+                <th style="width:28%; padding:6px 10px; font-size:13pt;">评估维度</th>
+                <th style="width:42%; padding:6px 10px; font-size:13pt;">心理学测查核心</th>
+                <th style="width:14%; text-align:center; padding:6px 10px; font-size:13pt;">得分</th>
+                <th style="width:16%; text-align:center; padding:6px 10px; font-size:13pt;">状态等级</th>
               </tr>
             </thead>
             <tbody>${scoreRowsHtml}</tbody>
           </table>
 
-          <div style="padding:8px 10px; background:#FFFBEB; border-left:3.5px solid #D97706; font-size:8pt; line-height:1.55; color:#78350F; border-radius:4px;">
+          <div style="padding:10px 14px; background:#FFFBEB; border-left:4.5px solid #D97706; font-size:12.5pt; line-height:1.65; color:#78350F; border-radius:6px;">
             <b>【致您的面谈前言】：</b>本评估客观折射了您在过去一段时间内的真实互动体验。量表得分的高低不是给人贴标签，而是帮您在纷乱的生活琐事中精准识别出当前最需要被看见、被拥抱的深层依恋诉求。
           </div>
         </div>
 
-        <div style="font-size:7.5pt; color:#94A3B8; text-align:center; border-top:1px solid #E2E8F0; padding-top:4px;">
-          慕喜乐夫妻营 · 专业亲密关系成长体系 ｜ 官方咨询微信：wymone3 ｜ 第 1 页 / 共 7 页
+        <div style="font-size:11pt; color:#94A3B8; text-align:center; border-top:1px solid #E2E8F0; padding-top:6px;">
+          慕喜乐夫妻营 · 专业亲密关系成长体系 ｜ 官方咨询微信：wymone3 ｜ 第 1 页 / 共 10 页
         </div>
       </div>
 
       <!-- ================= P2: 两性基石与保护性因子 (Prepare/Enrich) ================= -->
       <div class="pdf-page">
         <div>
-          <div style="border-bottom:1.5px solid #78350F; padding-bottom:6px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:flex-end;">
+          <div style="border-bottom:2px solid #78350F; padding-bottom:8px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:flex-end;">
             <div>
-              <b style="font-size:13pt; color:#78350F;">🛡️ 婚姻中的生命力与守护基石（正向资产）</b>
-              <div style="font-size:8pt; color:#64748B; margin-top:2px;">基于 Prepare/Enrich 临床模型提炼的固有保护因子</div>
+              <b style="font-size:19pt; color:#78350F;">🛡️ 婚姻中的生命力与守护基石（正向资产）</b>
+              <div style="font-size:12.5pt; color:#64748B; margin-top:3px;">基于 Prepare/Enrich 临床模型提炼的固有保护因子</div>
             </div>
-            <span style="font-size:8pt; color:#94A3B8;">档案：${code}</span>
+            <span style="font-size:12pt; color:#94A3B8;">档案：${code}</span>
           </div>
 
-          <div style="background:#F8FAFC; border:1px solid #E2E8F0; padding:10px 14px; border-radius:6px; font-size:8.5pt; color:#475569; line-height:1.65; margin-bottom:14px;">
+          <div style="background:#F8FAFC; border:1.5px solid #E2E8F0; padding:12px 16px; border-radius:8px; font-size:13.5pt; color:#334155; line-height:1.7; margin-bottom:16px;">
             💡 <b>临床测评师寄语：</b>心理学研究明确证实，婚姻的修复绝不能仅仅盯着千疮百孔的“痛点”，更要看见那些<b>托住关系没有坠落的“底盘资源”</b>。在您的答卷中，清晰呈现出以下珍贵的保护因子，这正是接下来重建信任的最强底气：
           </div>
 
           ${strengths.length > 0 ? strengthsCardsHtml : `
-            <div style="background:#FFF7ED; border:1px solid #FED7AA; border-radius:8px; padding:14px; color:#9A3412; font-size:8.5pt; line-height:1.6;">
+            <div style="background:#FFF7ED; border:1.5px solid #FED7AA; border-radius:8px; padding:16px; color:#9A3412; font-size:13.5pt; line-height:1.7;">
               <b>【临床观察与预警提示】：</b>在核心守护题项中，作答暂未呈现出显著突出的高分同盟因子（答卷显示如“维持现状多因责任或妥协”）。这表明当前关系正处于深度的“功能性契约磨损期”，夫妻双方的防御硬壳较厚，亟需在安全咨询场域中共同梳理并重建情感联结。
             </div>
           `}
 
-          <div style="margin-top:14px; padding:10px 12px; background:#EFF6FF; border-left:3.5px solid #2563EB; border-radius:4px; font-size:8.5pt; color:#1E40AF; line-height:1.6;">
+          <div style="margin-top:16px; padding:12px 16px; background:#EFF6FF; border-left:4.5px solid #2563EB; border-radius:6px; font-size:13.5pt; color:#1E40AF; line-height:1.7;">
             <b>【咨询师观察】：</b>${strengths.length > 0 ? 
               '这些守护因子的存在，充分说明你们依然具备做人底线的敬意、清晰的家庭界线与深层底盘。哪怕眼下沟通困难，这段关系的土壤依然保留着旺盛的生机。' : 
               '虽然显性高分守护因子受挫，但诚实面对现状本身就是最宝贵的起点。看见问题不是宣判失败，而是走出麻木循环的第一步。'}
           </div>
         </div>
 
-        <div style="font-size:7.5pt; color:#94A3B8; text-align:center; border-top:1px solid #E2E8F0; padding-top:4px;">
-          慕喜乐夫妻营 · 内部机密咨询材料 ｜ 未经许可请勿外传 ｜ 第 2 页 / 共 7 页
+        <div style="font-size:11pt; color:#94A3B8; text-align:center; border-top:1px solid #E2E8F0; padding-top:6px;">
+          慕喜乐夫妻营 · 内部机密咨询材料 ｜ 未经许可请勿外传 ｜ 第 2 页 / 共 10 页
         </div>
       </div>
 
-      <!-- ================= P3: 优先关注 #1 与 #2 深度洞察 (承压最高) ================= -->
+      <!-- ================= P3 ~ P8: 6 个维度独立整页大字呈现 ================= -->
+      ${renderSingleDimPageHtml(scoresList[0], 1, 3)}
+      ${renderSingleDimPageHtml(scoresList[1], 2, 4)}
+      ${renderSingleDimPageHtml(scoresList[2], 3, 5)}
+      ${renderSingleDimPageHtml(scoresList[3], 4, 6)}
+      ${renderSingleDimPageHtml(scoresList[4], 5, 7)}
+      ${renderSingleDimPageHtml(scoresList[5], 6, 8)}
+
+      <!-- ================= P9: 关系动力学全景剖析 (EFT 闭环) ================= -->
       <div class="pdf-page">
         <div>
-          <div style="border-bottom:1px solid #CBD5E1; padding-bottom:4px; margin-bottom:8px; display:flex; justify-content:space-between; font-size:8pt; color:#64748B;">
-            <span>慕喜乐夫妻营 · 承压维度深度洞察【维度 1 & 维度 2】</span>
-            <span>档案编号：${code}</span>
-          </div>
-
-          ${renderDimCardHtml(scoresList[0], 1)}
-          ${renderDimCardHtml(scoresList[1], 2)}
-        </div>
-
-        <div style="font-size:7.5pt; color:#94A3B8; text-align:center; border-top:1px solid #E2E8F0; padding-top:4px;">
-          慕喜乐夫妻营 · 专业亲密关系成长体系 ｜ 官方咨询微信：wymone3 ｜ 第 3 页 / 共 7 页
-        </div>
-      </div>
-
-      <!-- ================= P4: 优先关注 #3 与 #4 深度洞察 ================= -->
-      <div class="pdf-page">
-        <div>
-          <div style="border-bottom:1px solid #CBD5E1; padding-bottom:4px; margin-bottom:8px; display:flex; justify-content:space-between; font-size:8pt; color:#64748B;">
-            <span>慕喜乐夫妻营 · 关系维度深度洞察【维度 3 & 维度 4】</span>
-            <span>档案编号：${code}</span>
-          </div>
-
-          ${renderDimCardHtml(scoresList[2], 3)}
-          ${renderDimCardHtml(scoresList[3], 4)}
-        </div>
-
-        <div style="font-size:7.5pt; color:#94A3B8; text-align:center; border-top:1px solid #E2E8F0; padding-top:4px;">
-          慕喜乐夫妻营 · 专业亲密关系成长体系 ｜ 官方咨询微信：wymone3 ｜ 第 4 页 / 共 7 页
-        </div>
-      </div>
-
-      <!-- ================= P5: 优先关注 #5 与 #6 深度洞察 (同盟优势) ================= -->
-      <div class="pdf-page">
-        <div>
-          <div style="border-bottom:1px solid #CBD5E1; padding-bottom:4px; margin-bottom:8px; display:flex; justify-content:space-between; font-size:8pt; color:#64748B;">
-            <span>慕喜乐夫妻营 · 承压维度深度洞察【优先关注 #5 & #6】</span>
-            <span>档案编号：${code}</span>
-          </div>
-
-          ${renderDimCardHtml(scoresList[4], 5)}
-          ${renderDimCardHtml(scoresList[5], 6)}
-        </div>
-
-        <div style="font-size:7.5pt; color:#94A3B8; text-align:center; border-top:1px solid #E2E8F0; padding-top:4px;">
-          慕喜乐夫妻营 · 专业亲密关系成长体系 ｜ 官方咨询微信：wymone3 ｜ 第 5 页 / 共 7 页
-        </div>
-      </div>
-
-      <!-- ================= P6: 关系动力学全景剖析 (EFT 闭环) ================= -->
-      <div class="pdf-page">
-        <div>
-          <div style="border-bottom:1.5px solid #78350F; padding-bottom:6px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:flex-end;">
+          <div style="border-bottom:2px solid #78350F; padding-bottom:8px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:flex-end;">
             <div>
-              <b style="font-size:13pt; color:#78350F;">🔄 关系动力学全景剖析（EFT 负向互动闭环）</b>
-              <div style="font-size:8pt; color:#64748B; margin-top:2px;">情绪聚焦疗法 · 识别夫妻负向互动循环</div>
+              <b style="font-size:19pt; color:#78350F;">🔄 关系动力学全景剖析（EFT 负向互动闭环）</b>
+              <div style="font-size:12.5pt; color:#64748B; margin-top:3px;">情绪聚焦疗法 · 识别夫妻负向互动循环</div>
             </div>
-            <span style="font-size:8pt; color:#94A3B8;">档案：${code}</span>
+            <span style="font-size:12pt; color:#94A3B8;">档案：${code}</span>
           </div>
 
-          <div style="background:#FFF7ED; border:1px solid #FED7AA; border-radius:8px; padding:12px 14px; margin-bottom:14px; font-size:8.5pt; line-height:1.7; color:#9A3412;">
+          <div style="background:#FFF7ED; border:1.5px solid #FED7AA; border-radius:8px; padding:12px 16px; margin-bottom:14px; font-size:13.5pt; line-height:1.75; color:#9A3412;">
             <b>【真正的敌人不是彼此，而是这套自动化运转的“负向死锁系统”】：</b><br>
             在长年的日常相处中，夫妻之间往往会无意识地固化出一套<b>“一方积怨追击 / 挑剔 ↔ 另一方无力退缩 / 筑墙冷处理”</b>的恶性互锁环。
           </div>
 
           <!-- EFT 个性化角色锚定闭环图示模块 -->
-          <div style="background:#FFFBEB; border:1.5px solid #FCD34D; border-radius:8px; padding:8px 12px; margin-bottom:12px; font-size:8.5pt; color:#92400E;">
-            🎯 <b>案主当前互动姿态定位（结合答卷第 10 题与第 14 题作答推断）：</b><br>
+          <div style="background:#FFFBEB; border:1.5px solid #FCD34D; border-radius:8px; padding:10px 14px; margin-bottom:14px; font-size:14pt; color:#92400E;">
+            🎯 <b>案主当前互动姿态定位（结合答卷第 10 题与第 14 题推断）：</b><br>
             ${isHusband ? 
               '<b>【您在循环中的当前主导姿态】：退缩 / 回避方（Withdraw）</b>；妻子可能呈现的主导姿态：追击 / 积怨方（Pursuer）' : 
               '<b>【您在循环中的当前主导姿态】：追击 / 积怨方（Pursuer）</b>；丈夫可能呈现的主导姿态：退缩 / 回避方（Withdraw）'}
           </div>
 
-          <div style="display:grid; grid-template-columns:1fr 60px 1fr; gap:8px; align-items:center; background:#F8FAFC; border:1px solid #CBD5E1; border-radius:8px; padding:14px; margin-bottom:14px;">
-            <div style="background:#FFF; border:${!isHusband ? '2.5px solid #DC2626; box-shadow:0 2px 8px rgba(220,38,38,0.15);' : '1.5px solid #FCA5A5;'}; border-radius:8px; padding:10px; font-size:9.5pt; line-height:1.65; position:relative;">
-              ${!isHusband ? '<span style="position:absolute; top:-10px; right:10px; background:#DC2626; color:#FFF; font-size:7pt; font-weight:bold; padding:1px 6px; border-radius:10px;">★ 您的当前位置</span>' : ''}
-              <b style="color:#DC2626; display:block; margin-bottom:4px;">【追击 / 积怨方表象】${!isHusband ? '（妻子）' : '（伴侣可能姿态）'}</b>
+          <div style="background:#F8FAFC; border:1.5px solid #CBD5E1; border-radius:8px; padding:14px; margin-bottom:14px;">
+            <div style="background:#FFF; border:${!isHusband ? '2.5px solid #DC2626; box-shadow:0 2px 8px rgba(220,38,38,0.15);' : '1.5px solid #FCA5A5;'}; border-radius:8px; padding:12px 14px; font-size:13.5pt; line-height:1.7; position:relative; margin-bottom:10px;">
+              ${!isHusband ? '<span style="position:absolute; top:-11px; right:12px; background:#DC2626; color:#FFF; font-size:11pt; font-weight:bold; padding:2px 8px; border-radius:10px;">★ 您的当前位置</span>' : ''}
+              <b style="color:#DC2626; font-size:15pt; display:block; margin-bottom:4px;">【追击 / 积怨方表象】${!isHusband ? '（妻子）' : '（伴侣可能姿态）'}</b>
               感到被忽略、孤独、付出委屈 → 语气急促、挑剔、试图通过敲打唤起伴侣的注意与回应。
-              <div style="margin-top:6px; font-style:italic; color:#7F1D1D; background:#FEE2E2; padding:3px 6px; border-radius:4px;">
+              <div style="margin-top:6px; font-style:italic; color:#7F1D1D; background:#FEE2E2; padding:5px 10px; border-radius:6px; font-size:14pt; font-weight:bold;">
                 深层渴望：“请看着我！我需要确认你还在乎我！”
               </div>
             </div>
 
-            <div style="text-align:center; font-size:16pt; color:#94A3B8;">⇄</div>
+            <div style="text-align:center; font-size:18pt; color:#94A3B8; margin:4px 0;">⇄ 双方自动化触发与恶性循环 ⇄</div>
 
-            <div style="background:#FFF; border:${isHusband ? '2.5px solid #2563EB; box-shadow:0 2px 8px rgba(37,99,235,0.15);' : '1.5px solid #93C5FD;'}; border-radius:8px; padding:10px; font-size:9.5pt; line-height:1.65; position:relative;">
-              ${isHusband ? '<span style="position:absolute; top:-10px; right:10px; background:#2563EB; color:#FFF; font-size:7pt; font-weight:bold; padding:1px 6px; border-radius:10px;">★ 您的当前位置</span>' : ''}
-              <b style="color:#2563EB; display:block; margin-bottom:4px;">【退缩 / 回避方表象】${isHusband ? '（丈夫）' : '（伴侣可能姿态）'}</b>
+            <div style="background:#FFF; border:${isHusband ? '2.5px solid #2563EB; box-shadow:0 2px 8px rgba(37,99,235,0.15);' : '1.5px solid #93C5FD;'}; border-radius:8px; padding:12px 14px; font-size:13.5pt; line-height:1.7; position:relative;">
+              ${isHusband ? '<span style="position:absolute; top:-11px; right:12px; background:#2563EB; color:#FFF; font-size:11pt; font-weight:bold; padding:2px 8px; border-radius:10px;">★ 您的当前位置</span>' : ''}
+              <b style="color:#2563EB; font-size:15pt; display:block; margin-bottom:4px;">【退缩 / 回避方表象】${isHusband ? '（丈夫）' : '（伴侣可能姿态）'}</b>
               感到无论怎么做都是错的、被否定 → 闭嘴、沉默、看手机、逃回安全角落躲避战火。
-              <div style="margin-top:6px; font-style:italic; color:#1E3A8A; background:#DBEAFE; padding:3px 6px; border-radius:4px;">
+              <div style="margin-top:6px; font-style:italic; color:#1E3A8A; background:#DBEAFE; padding:5px 10px; border-radius:6px; font-size:14pt; font-weight:bold;">
                 深层渴望：“我害怕彻底搞砸，我只想保护自己不崩溃！”
               </div>
             </div>
           </div>
 
-          <div style="background:#F0FDF4; border-left:3.5px solid #16A34A; padding:10px 12px; border-radius:4px; font-size:8.5pt; color:#166534; line-height:1.65;">
+          <div style="background:#F0FDF4; border-left:4.5px solid #16A34A; padding:12px 16px; border-radius:6px; font-size:13.5pt; color:#166534; line-height:1.75;">
             <b>【临床咨询师点拨】：</b>你们看到的吵架或冷战，其实只是露在水面上的冰山一角。水面之下，是两个人被深深冻结的依恋渴望。解除痛苦的第一步，是夫妻双方达成共识：<b>“不是你不好，也不是我不好，而是这个负向死锁在伤害我们。”</b>
           </div>
         </div>
 
-        <div style="font-size:7.5pt; color:#94A3B8; text-align:center; border-top:1px solid #E2E8F0; padding-top:4px;">
-          慕喜乐夫妻营 · 内部机密咨询材料 ｜ 未经许可请勿外传 ｜ 第 6 页 / 共 7 页
+        <div style="font-size:11pt; color:#94A3B8; text-align:center; border-top:1px solid #E2E8F0; padding-top:6px;">
+          慕喜乐夫妻营 · 内部机密咨询材料 ｜ 未经许可请勿外传 ｜ 第 9 页 / 共 10 页
         </div>
       </div>
 
-      <!-- ================= P7: 轻量行动指引与面谈预约闭环 ================= -->
+      <!-- ================= P10: 深度梳理与面谈预约闭环 ================= -->
       <div class="pdf-page">
         <div>
-          <div style="border-bottom:1.5px solid #78350F; padding-bottom:6px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:flex-end;">
+          <div style="border-bottom:2px solid #78350F; padding-bottom:8px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:flex-end;">
             <div>
-              <b style="font-size:13pt; color:#78350F;">🌱 深度梳理与反思寄语（向光而行）</b>
-              <div style="font-size:8pt; color:#64748B; margin-top:2px;">看见是改变的起点 · 走进安全场域重构理解</div>
+              <b style="font-size:19pt; color:#78350F;">🌱 深度梳理与反思寄语（向光而行）</b>
+              <div style="font-size:12.5pt; color:#64748B; margin-top:3px;">看见是改变的起点 · 走进安全场域重构理解</div>
             </div>
-            <span style="font-size:8pt; color:#94A3B8;">档案：${code}</span>
+            <span style="font-size:12pt; color:#94A3B8;">档案：${code}</span>
           </div>
 
-          <div style="background:#FFFBEB; border:1px solid #FDE68A; border-radius:8px; padding:12px 14px; margin-bottom:14px; font-size:8.5pt; line-height:1.7; color:#78350F;">
-            <b>【评估结语】：</b>体检报告的意义在于看见盲区。你们的关系并非没有爱，而是被困在了长年运转的“防御-回避”自动化程序中。婚姻不是两个人的简单结合，而是两个原生依恋系统的相遇与重组。看见创伤与防御，爱才能自由流动。
+          <div style="background:#FFFBEB; border:1.5px solid #FDE68A; border-radius:8px; padding:14px 18px; margin-bottom:14px; font-size:14pt; line-height:1.8; color:#78350F;">
+            <b>【评估结语】：</b>体检报告的意义在于看见盲区。你们的关系并非没有爱，而是被困在了长年运转的“防御-回避”自动化程序中。婚姻不是两个人的简单结合，而是两个原生依恋系统的相遇与重组。看见彼此的创伤与防御，爱才能自由流动。
           </div>
 
-          <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:12px 14px; margin-bottom:14px;">
-            <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:12px 14px; margin-bottom:14px; font-size:9.5pt; color:#475569; line-height:1.7;"><b>【关于这份报告的阅读心法】：</b><br>这份评估不是一份定罪的“判决书”，而是一面温和的镜子，映照出彼此在漫长岁月里积攒的疲惫与防御。婚姻真正需要的不是立刻勉强自己去改变什么，而是在一个安全、包容的场域里，被专业咨询师引导着，第一次听懂对方平静或愤怒背后的真实心声。</div>
+          <div style="background:#F8FAFC; border:1.5px solid #CBD5E1; border-radius:8px; padding:14px 18px; margin-bottom:16px; font-size:14pt; color:#334155; line-height:1.8;">
+            <b>【关于这份报告的阅读心法】：</b><br>
+            这份评估不是一份定罪的“判决书”，而是一面温和的镜子，映照出彼此在漫长岁月里积攒的疲惫与防御。婚姻真正需要的不是立刻勉强自己去改变什么，而是在一个安全、包容的场域里，被专业咨询师引导着，第一次听懂对方平静或愤怒背后的真实心声。
           </div>
 
-          <div style="background:#EFF6FF; border:1.5px dashed #3B82F6; border-radius:8px; padding:14px; text-align:center;">
-            <b style="font-size:10.5pt; color:#1E40AF; display:block; margin-bottom:4px;">📞 慕喜乐 1对1 专家深度连线通道</b>
-            <p style="font-size:8.5pt; color:#475569; line-height:1.6; margin-bottom:8px;">
+          <div style="text-align:center; font-style:italic; margin:14px 0 20px; color:#B45309; font-weight:800; font-size:16pt; line-height:1.7;">
+            “婚姻不是两个人的简单结合，而是两个原生依恋系统的相遇与重组。<br>看见彼此的脆弱，爱才能重新自然流动。”
+          </div>
+
+          <div style="background:#EFF6FF; border:2px dashed #3B82F6; border-radius:10px; padding:18px; text-align:center;">
+            <b style="font-size:17pt; color:#1E40AF; display:block; margin-bottom:6px;">📞 慕喜乐 1对1 专家深度连线通道</b>
+            <p style="font-size:13.5pt; color:#475569; line-height:1.6; margin-bottom:12px;">
               量表负责标定盲区，解读负责解开死锁。<br>请扫描或添加官方咨询师微信，为您们预约 30 分钟双人深度拆解面谈：
             </p>
-            <div style="display:inline-block; background:#FFF; border:1px solid #BFDBFE; padding:5px 18px; border-radius:20px; font-weight:bold; color:#1D4ED8; font-size:10.5pt; letter-spacing:0.5px;">
+            <div style="display:inline-block; background:#FFF; border:2px solid #3B82F6; padding:8px 24px; border-radius:30px; font-weight:800; color:#1D4ED8; font-size:16pt; letter-spacing:1px; box-shadow:0 2px 8px rgba(37,99,235,0.2);">
               官方微信：wymone3
             </div>
-            <div style="font-size:7.5pt; color:#94A3B8; margin-top:6px;">添加时请备注您的家庭配对编号：${code}</div>
+            <div style="font-size:12pt; color:#64748B; margin-top:10px;">添加时请备注您的家庭配对编号：${code}</div>
           </div>
         </div>
 
-        <div style="font-size:7.5pt; color:#94A3B8; text-align:center; border-top:1px solid #E2E8F0; padding-top:4px;">
-          慕喜乐夫妻营 · 内部机密咨询材料 ｜ 未经许可请勿外传 ｜ 第 7 页 / 共 7 页 (完)
+        <div style="font-size:11pt; color:#94A3B8; text-align:center; border-top:1px solid #E2E8F0; padding-top:6px;">
+          慕喜乐夫妻营 · 内部机密咨询材料 ｜ 未经许可请勿外传 ｜ 第 10 页 / 共 10 页 (完)
         </div>
       </div>
     `;
   } else {
-    // 咨询师双人对比全貌 PDF
+    // 咨询师双人对比全貌 PDF (手机大字完整单页版)
     const w = d.wife;
     const h = d.husband;
 
@@ -2494,22 +2470,22 @@ function exportA4Report(type) {
       return avgA - avgB;
     });
 
-    const dualRadarSvg = generateDualRadarSVG(husbandScores, wifeScores, 230);
+    const dualRadarSvg = generateDualRadarSVG(husbandScores, wifeScores, 240);
 
     let compareRowsHtml = '';
     compareDimsSorted.forEach((dim, idx) => {
       const gap = dimGaps[dim.id];
       const isSevere = gap >= 15;
       compareRowsHtml += `
-        <tr style="height:24px;">
-          <td style="font-weight:bold; color:#78350F; font-size:8.5pt; padding:3px 8px;">
-            <span style="font-size:7.5pt; background:#E2E8F0; color:#475569; padding:1px 4px; border-radius:3px; margin-right:4px;">#${idx + 1}</span>
+        <tr style="height:32px;">
+          <td style="font-weight:bold; color:#78350F; font-size:13.5pt; padding:6px 10px;">
+            <span style="font-size:11pt; background:#E2E8F0; color:#475569; padding:2px 6px; border-radius:4px; margin-right:6px;">#${idx + 1}</span>
             ${dim.name}
           </td>
-          <td style="text-align:center; color:#1D4ED8; font-weight:bold; font-size:8.5pt; padding:3px 8px;">${husbandScores[dim.id]}分</td>
-          <td style="text-align:center; color:#BE185D; font-weight:bold; font-size:8.5pt; padding:3px 8px;">${wifeScores[dim.id]}分</td>
-          <td style="text-align:center; font-weight:bold; font-size:8.5pt; ${isSevere ? 'color:#DC2626;' : ''} padding:3px 8px;">${gap}分</td>
-          <td style="font-size:8pt; padding:3px 8px;">${isSevere ? '⚠️ 显著温差 (优先核对)' : '✔ 基本同频'}</td>
+          <td style="text-align:center; color:#1D4ED8; font-weight:800; font-size:14pt; padding:6px 10px;">${husbandScores[dim.id]}分</td>
+          <td style="text-align:center; color:#BE185D; font-weight:800; font-size:14pt; padding:6px 10px;">${wifeScores[dim.id]}分</td>
+          <td style="text-align:center; font-weight:800; font-size:14pt; ${isSevere ? 'color:#DC2626;' : ''} padding:6px 10px;">${gap}分</td>
+          <td style="font-size:13pt; font-weight:bold; padding:6px 10px; ${isSevere ? 'color:#DC2626;' : 'color:#15803D;'}">${isSevere ? '⚠️ 显著温差 (优先核对)' : '✔ 基本同频'}</td>
         </tr>
       `;
     });
@@ -2517,14 +2493,14 @@ function exportA4Report(type) {
     pdfHtml = `
       <div class="pdf-page">
         <div>
-          <div style="text-align:center; border-bottom:2px solid #78350F; padding-bottom:8px; margin-bottom:12px;">
-            <h1 style="font-size:16pt; color:#78350F; margin:0 0 3px 0;">慕喜乐夫妻营 · 婚姻关系双轨对比全貌报告</h1>
-            <div style="font-size:10.5pt; color:#475569; font-weight:bold;">【咨询师参考案卷 · 临床双轨对比诊断版】</div>
-            <div style="font-size:7.5pt; color:#94A3B8; margin-top:2px;">档案编号：${code} ｜ 测评日期：${new Date().toLocaleDateString()}</div>
+          <div style="text-align:center; border-bottom:2.5px solid #78350F; padding-bottom:10px; margin-bottom:14px;">
+            <h1 style="font-size:24pt; color:#78350F; margin:0 0 6px 0;">慕喜乐夫妻营 · 婚姻关系双轨对比全貌报告</h1>
+            <div style="font-size:15pt; color:#475569; font-weight:bold;">【咨询师参考案卷 · 临床双轨对比诊断版】</div>
+            <div style="font-size:11pt; color:#64748B; margin-top:4px;">档案编号：${code} ｜ 测评日期：${new Date().toLocaleDateString()}</div>
           </div>
 
-          <div style="background:#F8FAFC; border:1px solid #CBD5E1; padding:7px 10px; border-radius:6px; margin-bottom:12px; font-size:8.5pt; line-height:1.5;">
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px 10px;">
+          <div style="background:#F8FAFC; border:1.5px solid #CBD5E1; padding:10px 14px; border-radius:8px; margin-bottom:12px; font-size:12.5pt; line-height:1.6;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px 14px;">
               <div><b>👨 丈夫：</b>${h.name} (${h.age}岁 ｜ ${h.phone})</div>
               <div><b>👩 妻子：</b>${w.name} (${w.age}岁 ｜ ${w.phone})</div>
               <div><b>结婚时间：</b>${marriage}</div>
@@ -2532,34 +2508,34 @@ function exportA4Report(type) {
             </div>
           </div>
 
-          <div style="display:flex; justify-content:center; margin-bottom:8px;">
+          <div style="display:flex; justify-content:center; margin-bottom:10px;">
             ${dualRadarSvg}
           </div>
 
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-            <h3 style="font-size:9.5pt; margin:0; color:#1E293B;">📊 夫妻双方六大维度对比详单（已按综合承压程度置顶）：</h3>
-            <span style="font-size:7.5pt; color:#64748B;">由低分至高分排列</span>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <h3 style="font-size:14pt; margin:0; color:#1E293B;">📊 夫妻双方六大维度对比详单（已按综合承压程度置顶）：</h3>
+            <span style="font-size:11pt; color:#64748B;">由低分至高分排列</span>
           </div>
-          <table class="pdf-table" style="margin:2px 0 10px;">
+          <table class="pdf-table" style="margin:4px 0 14px;">
             <thead>
-              <tr style="background:#F1F5F9; height:24px;">
-                <th style="padding:3px 8px; font-size:8.5pt;">评估维度</th>
-                <th style="text-align:center; padding:3px 8px; font-size:8.5pt;">👨 丈夫得分</th>
-                <th style="text-align:center; padding:3px 8px; font-size:8.5pt;">👩 妻子得分</th>
-                <th style="text-align:center; padding:3px 8px; font-size:8.5pt;">感知温差</th>
-                <th style="padding:3px 8px; font-size:8.5pt;">临床性质</th>
+              <tr style="background:#F1F5F9; height:30px;">
+                <th style="padding:6px 10px; font-size:13pt;">评估维度</th>
+                <th style="text-align:center; padding:6px 10px; font-size:13pt;">👨 丈夫得分</th>
+                <th style="text-align:center; padding:6px 10px; font-size:13pt;">👩 妻子得分</th>
+                <th style="text-align:center; padding:6px 10px; font-size:13pt;">感知温差</th>
+                <th style="padding:6px 10px; font-size:13pt;">临床性质</th>
               </tr>
             </thead>
             <tbody>${compareRowsHtml}</tbody>
           </table>
 
-          <div class="avoid-break" style="background:#FFFDF5; border:1px solid #FCD34D; padding:10px 12px; border-radius:6px; font-size:8.5pt; line-height:1.6;">
-            <b style="color:#B45309;">🎯 咨询师面谈核对与干预引导方向：</b><br>
+          <div class="avoid-break" style="background:#FFFDF5; border:1.5px solid #FCD34D; padding:14px 16px; border-radius:8px; font-size:13.5pt; line-height:1.75;">
+            <b style="color:#B45309; font-size:14.5pt; display:block; margin-bottom:4px;">🎯 咨询师面谈核对与干预引导方向：</b>
             本案首要核对排在最前的承压维度。先引导双方核对具体生活事件中的情绪反应，协助双方看清“追-逃循环”等深层依恋创伤，促成现场破冰与深度转化。
           </div>
         </div>
 
-        <div style="margin-top:10px; font-size:7.5pt; color:#94A3B8; text-align:center; border-top:1px solid #E2E8F0; padding-top:4px;">
+        <div style="margin-top:10px; font-size:11pt; color:#94A3B8; text-align:center; border-top:1px solid #E2E8F0; padding-top:6px;">
           慕喜乐夫妻营 · 内部机密咨询材料 ｜ 未经许可请勿外传 ｜ 客服微信：wymone3 ｜ 第 1 页 (完)
         </div>
       </div>
@@ -2916,7 +2892,7 @@ function generateRadarSVG(scoresMap, size = 260) {
     const lx = cx + (radius + 24) * Math.cos(a);
     const ly = cy + (radius + 18) * Math.sin(a);
     const sVal = scoresMap[dims[i].id] || 0;
-    labelsSvg += '<text x="' + lx.toFixed(1) + '" y="' + ly.toFixed(1) + '" font-size="10.5" font-weight="bold" fill="#334155" text-anchor="middle" dominant-baseline="central">' + dims[i].name + ' ' + sVal + '分</text>';
+    labelsSvg += '<text x="' + lx.toFixed(1) + '" y="' + ly.toFixed(1) + '" font-size=\"12\" font-weight=\"bold\" fill=\"#1E293B\" text-anchor="middle" dominant-baseline="central">' + dims[i].name + ' ' + sVal + '分</text>';
   }
 
   let dataPoints = [];
@@ -2984,7 +2960,7 @@ function generateDualRadarSVG(husbandScores, wifeScores, size) {
 
     var lx = cx + (radius + 25) * Math.cos(a);
     var ly = cy + (radius + 18) * Math.sin(a);
-    labelsSvg += '<text x="' + lx.toFixed(1) + '" y="' + ly.toFixed(1) + '" font-size="10" font-weight="bold" fill="#334155" text-anchor="middle" dominant-baseline="central">' + dims[i].name + '</text>';
+    labelsSvg += '<text x="' + lx.toFixed(1) + '" y="' + ly.toFixed(1) + '" font-size=\"11.5\" font-weight=\"bold\" fill=\"#1E293B\" text-anchor="middle" dominant-baseline="central">' + dims[i].name + '</text>';
   }
 
   var hPoints = [];
@@ -3015,9 +2991,9 @@ function generateDualRadarSVG(husbandScores, wifeScores, size) {
 
   var legend = '<g transform="translate(' + (cx - 75) + ', 12)">' +
     '<circle cx="0" cy="0" r="4" fill="#2563EB"/>' +
-    '<text x="7" y="3" font-size="9.5" font-weight="bold" fill="#2563EB">👨 丈夫得分</text>' +
+    '<text x="7" y="3" font-size=\"11\" font-weight=\"bold\" fill="#2563EB">👨 丈夫得分</text>' +
     '<circle cx="78" cy="0" r="4" fill="#BE185D"/>' +
-    '<text x="85" y="3" font-size="9.5" font-weight="bold" fill="#BE185D">👩 妻子得分</text>' +
+    '<text x="85" y="3" font-size=\"11\" font-weight=\"bold\" fill="#BE185D">👩 妻子得分</text>' +
     '</g>';
 
   return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" style="max-width:100%; height:auto;">' +
