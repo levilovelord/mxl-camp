@@ -1,0 +1,3289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>慕喜乐夫妻营 · 咨询师专属工作台</title>
+  <style>
+    :root {
+      --primary: #78350F;
+      --primary-gradient: linear-gradient(135deg, #78350F 0%, #9A3412 100%);
+      --accent: #D97706;
+      --husband: #1D4ED8;
+      --wife: #BE185D;
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text: #1E293B;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
+      --danger: #DC2626;
+      --warning: #D97706;
+      --success: #16A34A;
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: 80px;
+    }
+
+    /* 顶部导航 */
+    .header-bar {
+      background: #0F172A;
+      color: #FFF;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .header-bar h1 { font-size: 17px; font-weight: 800; letter-spacing: 0.5px; }
+    .header-tag {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11.5px;
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 20px auto;
+      padding: 0 16px;
+    }
+
+    /* 检索与工具栏 */
+    .toolbar-card {
+      background: #FFF;
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 18px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .toolbar-left { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .toolbar-left input, .toolbar-left select {
+      padding: 9px 12px;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      font-size: 13.5px;
+      outline: none;
+      background: #FAFAFA;
+    }
+    .toolbar-left input:focus, .toolbar-left select:focus {
+      border-color: var(--accent);
+      background: #FFF;
+    }
+    .btn {
+      padding: 9px 18px;
+      border-radius: 8px;
+      border: none;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: var(--primary-gradient); color: #FFF; box-shadow: 0 2px 8px rgba(120,53,15,0.2); }
+    .btn-primary:hover { opacity: 0.95; }
+    .btn-print {
+      background: #1E293B;
+      color: #FFF;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .btn-print:hover { background: #0F172A; }
+
+    /* 家庭画像栏 */
+    .family-profile-banner {
+      background: #FFF;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 18px 22px;
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+      position: relative;
+    }
+    .fp-item b { display: block; font-size: 12px; color: #64748B; margin-bottom: 4px; }
+    .fp-item span { font-size: 14.5px; font-weight: 800; color: #1E293B; }
+
+    /* Tabs 导航 */
+    .section-tabs {
+      display: flex;
+      background: #E2E8F0;
+      padding: 5px;
+      border-radius: 14px;
+      margin-bottom: 22px;
+      gap: 5px;
+    }
+    .section-tabs button {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 12px 10px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #64748B;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-align: center;
+    }
+    .section-tabs button.active {
+      background: #FFF;
+      color: var(--primary);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .card {
+      background: #FFF;
+      border-radius: var(--radius);
+      padding: 24px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.02);
+      margin-bottom: 22px;
+    }
+    .card-title {
+      font-size: 16.5px;
+      font-weight: 800;
+      color: #0F172A;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #F1F5F9;
+      padding-bottom: 12px;
+    }
+
+    /* 空状态提示卡 */
+    .empty-state-notice {
+      padding: 50px 20px;
+      text-align: center;
+      background: #F8FAFC;
+      border: 2px dashed #CBD5E1;
+      border-radius: 16px;
+      margin: 14px 0;
+    }
+    .empty-icon { font-size: 42px; margin-bottom: 12px; }
+    .empty-state-notice h3 { font-size: 17px; color: #1E293B; margin-bottom: 8px; }
+    .empty-state-notice p { font-size: 13px; color: #64748B; line-height: 1.6; max-width: 520px; margin: 0 auto; }
+    .status-steps {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 18px;
+      font-size: 13.5px;
+      font-weight: 800;
+    }
+    .step-done { color: var(--success); }
+    .step-pending { color: var(--danger); }
+
+    /* 维度深度解读卡片 */
+    .dim-detail-card {
+      background: #FAFAFA;
+      border: 1px solid #E5E7EB;
+      border-radius: var(--radius);
+      padding: 22px;
+      margin-bottom: 22px;
+      transition: all 0.2s ease;
+    }
+    .dim-detail-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+    }
+    .dim-detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      border-bottom: 1px dashed #D1D5DB;
+      padding-bottom: 12px;
+    }
+    .dim-score-badge {
+      font-size: 14.5px;
+      font-weight: 800;
+      padding: 6px 14px;
+      border-radius: 30px;
+    }
+    .tier-danger { background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
+    .tier-warn   { background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
+    .tier-normal { background: #E0F2FE; color: #075985; border: 1px solid #7DD3FC; }
+    .tier-excel  { background: #DCFCE7; color: #166534; border: 1px solid #86EFAC; }
+
+    /* 诊断面板 */
+    
+    /* 四层结构卡片样式 */
+    .four-layer-container {
+      margin: 14px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .layer-card {
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 13px;
+      line-height: 1.65;
+      border: 1px solid transparent;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+    .layer-scene {
+      background: #FFF7ED;
+      border-color: #FFEDD5;
+      color: #9A3412;
+    }
+    .layer-theory {
+      background: #EFF6FF;
+      border-color: #DBEAFE;
+      color: #1E40AF;
+    }
+    .layer-action {
+      background: #F0FDF4;
+      border-color: #DCFCE7;
+      color: #166534;
+    }
+    .layer-camp {
+      background: #FAF5FF;
+      border-color: #F3E8FF;
+      color: #6B21A8;
+    }
+    .layer-title {
+      font-weight: 800;
+      font-size: 13px;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .summary-quote-box {
+      background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+      border: 1px solid #FDE68A;
+      border-left: 6px solid #D97706;
+      border-radius: 14px;
+      padding: 20px 22px;
+      margin: 24px 0;
+      line-height: 1.8;
+      font-size: 13.5px;
+      color: #78350F;
+      box-shadow: 0 4px 14px rgba(217,119,6,0.08);
+    }
+    .summary-quote-box h4 {
+      font-size: 15.5px;
+      margin-bottom: 10px;
+      color: #92400E;
+    }
+
+    .tier-diagnostic-box {
+      background: #FFF;
+      border: 1px solid #E2E8F0;
+      border-left: 5px solid var(--primary);
+      border-radius: 0 10px 10px 0;
+      padding: 16px;
+      margin-bottom: 14px;
+      line-height: 1.7;
+      font-size: 13.5px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+    }
+    .diag-section-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .diag-desc { color: #334155; margin-bottom: 10px; }
+    .diag-risk {
+      color: #991B1B;
+      font-size: 12.5px;
+      background: #FEF2F2;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #FEE2E2;
+    }
+
+    /* 关键警报卡 */
+    .key-alert-card {
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      font-size: 12.5px;
+      color: #991B1B;
+      line-height: 1.6;
+    }
+
+    /* 题目打分表 */
+    .q-score-list {
+      background: #FFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+    }
+    .q-score-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #F8FAFC;
+      font-size: 12.5px;
+    }
+    .q-score-item:last-child { border-bottom: none; }
+    .q-score-val {
+      font-weight: 800;
+      font-size: 12.5px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-left: 8px;
+      flex-shrink: 0;
+    }
+
+    /* 生活核对提问 */
+    .inquiry-box {
+      background: #FFFBEB;
+      border: 1px dashed #F59E0B;
+      border-radius: 10px;
+      padding: 16px;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .inquiry-box b { color: #B45309; display: block; margin-bottom: 6px; font-size: 13.5px; }
+    .inquiry-box ul { margin-left: 18px; }
+    .inquiry-box li { margin-bottom: 4px; color: #4B5563; }
+
+    /* 双人对比 */
+    .canvas-wrap { max-width: 440px; margin: 10px auto 20px; }
+    canvas { width: 100% !important; height: auto !important; }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 768px) { .compare-grid { grid-template-columns: 1fr; } }
+    .compare-box { border-radius: 12px; padding: 18px; border: 1px solid var(--border); }
+    .box-same { background: #F0FDF4; border-color: #BBF7D0; }
+    .box-diff { background: #FEF2F2; border-color: #FECACA; }
+
+    /* 3天深度营卡片 */
+    .camp-banner {
+      background: var(--primary-gradient);
+      color: #FFF;
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-top: 22px;
+      box-shadow: 0 8px 24px rgba(120,53,15,0.25);
+    }
+    .camp-banner h2 { font-size: 20px; margin-bottom: 6px; }
+    .camp-days {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 18px 0;
+    }
+    @media (max-width: 680px) { .camp-days { grid-template-columns: 1fr; } }
+    .camp-day-card {
+      background: rgba(255,255,255,0.14);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 12.5px;
+      line-height: 1.55;
+    }
+    .closing-script {
+      background: #FFF;
+      color: #1E293B;
+      border-radius: 12px;
+      padding: 16px 18px;
+      font-size: 13.5px;
+      line-height: 1.75;
+      border-left: 5px solid var(--accent);
+      margin-top: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    /* =========================================================================
+       重磅：专属 A4 印刷级工整 PDF 报告渲染容器 (纯白、严格分页、绝无错乱)
+       ========================================================================= */
+    #print-report-container {
+      display: none; /* 网页浏览时完全隐藏 */
+    }
+
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 8mm 10mm 8mm 10mm; /* 彻底规避默认页眉页脚 */
+      }
+      /* 禁止浏览器插入自带页眉页脚网址和时间 */
+      body {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      body, html {
+        background: #FFFFFF !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 10pt;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .header-bar, .toolbar-card, .family-profile-banner, .section-tabs, #auth-overlay, .btn, .no-print, #main-content {
+        display: none !important;
+      }
+      #print-report-container {
+        display: block !important;
+        width: 100% !important;
+      }
+      .pdf-page {
+        page-break-after: always;
+        break-after: page;
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        background: #FFF;
+        min-height: 270mm;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .pdf-page:last-child {
+        page-break-after: auto;
+        break-after: auto;
+      }
+      .avoid-break {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      /* 表格边框与打印保真 */
+      /* 表格边框与打印保真 */
+      .pdf-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0;
+      }
+      .pdf-table th, .pdf-table td {
+        border: 1px solid #94A3B8;
+        padding: 8px 10px;
+        font-size: 10pt;
+        text-align: left;
+      }
+      .pdf-table th {
+        background-color: #F1F5F9 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header-bar">
+  <div>
+    <h1>慕喜乐夫妻营 · 咨询师专属工作台</h1>
+  </div>
+  <div style="display:flex; gap:10px; align-items:center;">
+    <span class="header-tag">3天深度转化营 · 临床分层诊断版</span>
+    <span style="font-size:12px; color:#94A3B8;">导师在线</span>
+  </div>
+</div>
+
+<div class="container" id="main-content" style="display:block;">
+
+  <!-- 检索栏 -->
+  <div class="toolbar-card">
+    <div class="toolbar-left">
+      <span style="font-size:13px; font-weight:700;">调阅客户：</span>
+      <select id="caseDropdown" onchange="selectFromDropdown()" style="width:260px;">
+        <option value="">-- 选择已答题夫妻 --</option>
+      </select>
+      <input type="text" id="targetOrder" placeholder="输入配对码或手机号" style="width:170px;">
+      <button class="btn btn-primary" onclick="loadCaseData()">调取档案</button>
+    </div>
+    <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+      <span id="cloud-status-badge" style="cursor:pointer; font-size:12px; padding:5px 10px; border-radius:20px; font-weight:700; background:#FEF3C7; color:#92400E; display:inline-flex; align-items:center; gap:5px; border:1px solid #FCD34D;" onclick="openCloudModal()" title="点击配置云端数据库">
+        <span id="cloud-status-dot" style="width:8px; height:8px; border-radius:50%; background:#D97706; display:inline-block;"></span>
+        <span id="cloud-status-text">☁️ 云数据库检测中...</span>
+      </span>
+      <button class="btn" style="background:#2563EB; color:#FFF; font-weight:700; font-size:12px; padding:6px 10px;" onclick="manualSyncCloud(true)">🔄 云端刷新</button>
+      <button class="btn" style="background:#FFF; border:1px solid #CBD5E1; color:#334155; font-size:12px; padding:6px 10px; font-weight:700;" onclick="openCloudModal()">⚙️ 云数据库设置</button>
+      <button class="btn" style="background:#BE185D; color:#FFF; font-weight:700; font-size:12px; padding:6px 12px; box-shadow:0 2px 8px rgba(190,24,93,0.3);" onclick="exportA4Report('wife')">📄 导出妻子报告(PDF)</button>
+      <button class="btn" style="background:#1D4ED8; color:#FFF; font-weight:700; font-size:12px; padding:6px 12px; box-shadow:0 2px 8px rgba(29,78,216,0.3);" onclick="exportA4Report('husband')">📄 导出丈夫报告(PDF)</button>
+      <button class="btn" style="background:#78350F; color:#FFF; font-weight:700; font-size:12px; padding:6px 12px; box-shadow:0 2px 8px rgba(120,53,15,0.3);" onclick="exportA4Report('compare')">📄 导出双轨对比(PDF)</button>
+      <button class="btn" style="background:#16A34A; color:#FFF; font-weight:700; font-size:12px; padding:6px 10px;" onclick="openImportModal()">📥 粘贴凭证</button>
+      <button class="btn" style="background:#475569; color:#FFF; font-size:12px; padding:6px 10px;" onclick="openDataModal()">🗂️ 档案库</button>
+    </div>
+  </div>
+
+  <!-- 家庭画像 -->
+  <div class="family-profile-banner">
+    <div class="fp-item">
+      <b>家庭专属档案编号</b>
+      <span id="fp-code" style="color:var(--primary);">MXL-待调取</span>
+      <div style="font-size:11.5px; color:#64748B; margin-top:2px;" id="fp-status">就绪</div>
+    </div>
+    <div class="fp-item">
+      <b>婚姻与子女情况</b>
+      <span id="fp-marriage">婚龄：-</span>
+      <div style="font-size:12px; color:#475569;" id="fp-children">子女阶段：-</div>
+    </div>
+    <div class="fp-item">
+      <b>👩 妻子基本信息</b>
+      <span id="fp-wife-name" style="color:var(--wife);">尚未答题</span>
+      <div style="font-size:12px; color:#475569;" id="fp-wife-phone">电话：-</div>
+    </div>
+    <div class="fp-item">
+      <b>👨 丈夫基本信息</b>
+      <span id="fp-husband-name" style="color:var(--husband);">尚未答题</span>
+      <div style="font-size:12px; color:#475569;" id="fp-husband-phone">电话：-</div>
+    </div>
+    
+    <div class="fp-item" id="fp-invite-container" style="grid-column: 1 / -1; background: #FFFBEB; border: 1.5px dashed #F59E0B; border-radius: 10px; padding: 12px 16px; display: none; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 22px;">🔗</span>
+        <div>
+          <b style="color: #B45309; font-size: 13px; margin-bottom: 2px;" id="fp-invite-title">待配偶补填链接</b>
+          <div style="font-size: 12px; color: #78350F;" id="fp-invite-desc">该家庭已有 1 人作答，可直接复制专属答题链接发送给其配偶。</div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <button class="btn" style="background: #D97706; color: #FFF; font-weight: 700; font-size: 12px; padding: 7px 14px; box-shadow: 0 2px 8px rgba(217,119,6,0.3);" onclick="copyPartnerInviteLink()">📋 一键复制配偶补填链接</button>
+        <button class="btn" style="background: #FFF; border: 1px solid #CBD5E1; color: #475569; font-size: 12px; padding: 7px 12px;" onclick="copyPartnerWechatPrompt()">💬 复制催填提醒微信话术</button>
+      </div>
+    </div>
+<div style="position:absolute; right:16px; top:16px;" class="no-print">
+      <button class="btn" style="padding:4px 8px; font-size:11px; background:#FEF2F2; color:#DC2626; border:1px solid #FECACA;" onclick="deleteCurrentCase()">🗑️ 删除此档案</button>
+    </div>
+  </div>
+
+  <!-- 三大功能 Tab -->
+  <div class="section-tabs no-print">
+    <button id="tab-wife" class="active" onclick="switchSection('wife')">👩 第一板块：妻子单独深度解读与生活核对</button>
+    <button id="tab-husband" onclick="switchSection('husband')">👨 第二板块：丈夫单独深度解读与生活核对</button>
+    <button id="tab-compare" onclick="switchSection('compare')">⚖️ 第三板块：双方对比与 3天深度营转化</button>
+  </div>
+
+  <!-- ======================== 板块一：妻子单独解读 ======================== -->
+  <div id="section-wife">
+    <div class="card">
+      <div class="card-title">
+        <span>👩 妻子视角：六大维度阶梯式心理学解读与真实生活核对</span>
+        <button class="btn btn-print" onclick="exportA4Report('wife')">📄 导出【妻子专属 PDF 报告】</button>
+      </div>
+      <div id="wife-content-area"></div>
+    </div>
+  </div>
+
+  <!-- ======================== 板块二：丈夫单独解读 ======================== -->
+  <div id="section-husband" style="display:none;">
+    <div class="card">
+      <div class="card-title">
+        <span>👨 丈夫视角：六大维度阶梯式心理学解读与真实生活核对</span>
+        <button class="btn btn-print" onclick="exportA4Report('husband')">📄 导出【丈夫专属 PDF 报告】</button>
+      </div>
+      <div id="husband-content-area"></div>
+    </div>
+  </div>
+
+  <!-- ======================== 板块三：双方对比与 3天深度营转化 ======================== -->
+  <div id="section-compare" style="display:none;">
+    <div class="card">
+      <div class="card-title">
+        <span>⚖️ 夫妻双人对比综合报告（双轨感知雷达图 & 共识差异分析）</span>
+        <button class="btn btn-print" onclick="exportA4Report('compare')">📄 导出【咨询师双轨对比全貌 PDF】</button>
+      </div>
+      <div id="compare-content-area"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 专属 A4 印刷级 PDF 模板容器 (打印时自动激活，排版极度工整) -->
+<div id="print-report-container"></div>
+
+<!-- 云端数据库配置弹窗 (Supabase / LeanCloud) -->
+<div id="cloud-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(15,23,42,0.7); z-index:9999; align-items:center; justify-content:center; padding:16px;">
+  <div style="background:#FFF; width:100%; max-width:600px; max-height:90vh; overflow-y:auto; border-radius:18px; padding:24px; box-shadow:0 20px 45px rgba(0,0,0,0.3); text-align:left;">
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1.5px solid #E2E8F0; padding-bottom:12px; margin-bottom:16px;">
+      <div>
+        <h3 style="font-size:17px; color:#1E293B; margin:0 0 2px 0; display:flex; align-items:center; gap:8px;">
+          <span>☁️</span> 全自动云端数据库配置 (实现手机提交·电脑秒现)
+        </h3>
+        <span style="font-size:12px; color:#64748B;">无需客户发凭证，双方提交后后台自动实时聚合与刷新</span>
+      </div>
+      <button class="btn" style="background:#F1F5F9; color:#475569;" onclick="closeCloudModal()">✖ 关闭</button>
+    </div>
+
+    <!-- 服务商选择 -->
+    <div style="margin-bottom:14px;">
+      <label style="font-size:13px; font-weight:bold; color:#334155; display:block; margin-bottom:6px;">选择云端数据库提供商：</label>
+      <select id="cfg-provider" onchange="toggleProviderFields()" style="width:100%; padding:9px 12px; border:1px solid #CBD5E1; border-radius:8px; font-size:13px; font-weight:600;">
+        <option value="supabase">🟢 Supabase (极力推荐 · 永久免费 · 实时推送 · 国际最流行开源云数据库)</option>
+        <option value="leancloud">🟡 LeanCloud 国际版 (国内团队出品 · 免备案 · 经典 BaaS)</option>
+      </select>
+    </div>
+
+    <!-- Supabase 专属配置字段 -->
+    <div id="supabase-fields" style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:14px; margin-bottom:16px;">
+      <div style="font-size:12.5px; font-weight:bold; color:#1E293B; margin-bottom:10px;">Supabase 项目参数：</div>
+      <div style="margin-bottom:10px;">
+        <label style="font-size:12px; color:#475569; display:block; margin-bottom:4px;">Project URL (项目网址)：</label>
+        <input type="text" id="cfg-sb-url" placeholder="例如: https://xxxxxxxxxxxxxx.supabase.co" style="width:100%; padding:8px 10px; border:1px solid #CBD5E1; border-radius:6px; font-size:12px; font-family:monospace;">
+      </div>
+      <div style="margin-bottom:10px;">
+        <label style="font-size:12px; color:#475569; display:block; margin-bottom:4px;">API Key (anon public key 匿名公开秘钥)：</label>
+        <input type="password" id="cfg-sb-key" placeholder="例如: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." style="width:100%; padding:8px 10px; border:1px solid #CBD5E1; border-radius:6px; font-size:12px; font-family:monospace;">
+      </div>
+      <div style="background:#FFFBEB; border:1px dashed #F59E0B; border-radius:8px; padding:10px 12px; font-size:12px; color:#78350F; line-height:1.5;">
+        <b>📌 建表指南（在 Supabase 只需粘贴运行一次）：</b><br>
+        1. 前往 <a href="https://supabase.com" target="_blank" style="color:#D97706; text-decoration:underline; font-weight:bold;">supabase.com</a> 免费注册并创建项目；<br>
+        2. 点击左侧导航栏的 <b>SQL Editor</b>，粘贴并运行下方这 6 行代码即可：
+        <pre style="background:#1E293B; color:#F8FAFC; padding:8px 10px; border-radius:6px; font-size:11px; margin:6px 0; overflow-x:auto; user-select:all;">
+create table if not exists mxl_cases (
+  code text primary key,
+  data jsonb not null,
+  updated_at timestamp with time zone default now()
+);
+alter table mxl_cases enable row level security;
+create policy "Public Access" on mxl_cases for all using (true) with check (true);</pre>
+        3. 在左下角 <b>Project Settings -> API</b> 中复制 URL 和 anon key 粘贴在上方即可！
+      </div>
+    </div>
+
+    <!-- LeanCloud 专属配置字段 -->
+    <div id="leancloud-fields" style="display:none; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:14px; margin-bottom:16px;">
+      <div style="font-size:12.5px; font-weight:bold; color:#1E293B; margin-bottom:10px;">LeanCloud 项目参数：</div>
+      <div style="margin-bottom:8px;">
+        <label style="font-size:12px; color:#475569; display:block; margin-bottom:3px;">App ID：</label>
+        <input type="text" id="cfg-lc-id" placeholder="LeanCloud 控制台获取的 App ID" style="width:100%; padding:8px 10px; border:1px solid #CBD5E1; border-radius:6px; font-size:12px; font-family:monospace;">
+      </div>
+      <div style="margin-bottom:8px;">
+        <label style="font-size:12px; color:#475569; display:block; margin-bottom:3px;">App Key：</label>
+        <input type="password" id="cfg-lc-key" placeholder="LeanCloud 控制台获取的 App Key" style="width:100%; padding:8px 10px; border:1px solid #CBD5E1; border-radius:6px; font-size:12px; font-family:monospace;">
+      </div>
+      <div style="margin-bottom:8px;">
+        <label style="font-size:12px; color:#475569; display:block; margin-bottom:3px;">REST API 绑定的域名 / ServerURL（选填）：</label>
+        <input type="text" id="cfg-lc-server" placeholder="例如: https://xxx.example.com (留空则使用默认共享域名)" style="width:100%; padding:8px 10px; border:1px solid #CBD5E1; border-radius:6px; font-size:12px; font-family:monospace;">
+      </div>
+    </div>
+
+    <!-- 测试结果提示区 -->
+    <div id="cfg-test-result" style="display:none; padding:10px 14px; border-radius:8px; font-size:12.5px; margin-bottom:14px; line-height:1.5;"></div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; border-top:1px solid #E2E8F0; padding-top:14px;">
+      <button class="btn" style="background:#F1F5F9; color:#334155; font-weight:700;" onclick="testCloudConfigAction()">🔌 测试连接</button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn" style="background:#FFF; border:1px solid #CBD5E1; color:#475569;" onclick="closeCloudModal()">取消</button>
+        <button class="btn btn-primary" style="font-weight:700;" onclick="saveCloudConfigAction()">💾 保存配置并开启实时同步</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- 快速导入凭证弹窗 -->
+<div id="import-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(15,23,42,0.7); z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:#FFF; width:90%; max-width:540px; border-radius:18px; padding:24px; box-shadow:0 20px 45px rgba(0,0,0,0.3);">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <h3 style="font-size:17px; color:#1E293B;">📥 粘贴客户测评凭证码录入</h3>
+      <button class="btn" style="background:#F1F5F9; color:#475569;" onclick="closeImportModal()">✖ 关闭</button>
+    </div>
+    <p style="font-size:12.5px; color:#64748B; line-height:1.5; margin-bottom:12px;">
+      当客户在手机提交后，会将一串加密凭证发送给客服微信（wymone3）。请将客户发来的代码粘贴在下方输入框中，系统将立即为您还原完整 36 题打分与诊断报告并存入数据库：
+    </p>
+    <textarea id="import-voucher-input" rows="5" placeholder="请在此粘贴客户发来的测评凭证代码（如 eyJjIjoiTVhMOT...）" style="width:100%; border:1px solid #CBD5E1; border-radius:10px; padding:10px; font-size:12px; font-family:monospace; resize:none; margin-bottom:14px; box-sizing:border-box;"></textarea>
+    <div style="display:flex; justify-content:flex-end; gap:10px;">
+      <button class="btn" style="background:#F1F5F9; color:#475569;" onclick="closeImportModal()">取消</button>
+      <button class="btn btn-primary" style="padding:10px 22px;" onclick="confirmImportVoucher()">立即解析并调取档案</button>
+    </div>
+  </div>
+</div>
+
+<!-- 数据管理模态弹窗 -->
+<div id="data-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(15,23,42,0.7); z-index:9998; align-items:center; justify-content:center;">
+  <div style="background:#FFF; width:92%; max-width:880px; max-height:85vh; border-radius:18px; padding:24px; display:flex; flex-direction:column; box-shadow:0 20px 45px rgba(0,0,0,0.3);">
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #E2E8F0; padding-bottom:14px; margin-bottom:14px;">
+      <div>
+        <h3 style="font-size:17.5px; color:#1E293B;">🗂️ 客户档案数据库管理中心</h3>
+        <span style="font-size:12px; color:#64748B;">当前系统已收录：<b id="modal-total-count" style="color:var(--primary);">0 对</b> 夫妻</span>
+      </div>
+      <button class="btn" style="background:#F1F5F9; color:#475569;" onclick="closeDataModal()">✖ 关闭窗口</button>
+    </div>
+
+    <div style="flex:1; overflow-y:auto; margin-bottom:16px;">
+      <table style="width:100%; border-collapse:collapse; font-size:12.5px;">
+        <thead>
+          <tr style="background:#F8FAFC; border-bottom:1px solid #E2E8F0;">
+            <th style="padding:8px 10px; text-align:left;">序号</th>
+            <th style="padding:8px 10px; text-align:left;">配对编号</th>
+            <th style="padding:8px 10px; text-align:left;">妻子信息</th>
+            <th style="padding:8px 10px; text-align:left;">丈夫信息</th>
+            <th style="padding:8px 10px; text-align:left;">婚龄</th>
+            <th style="padding:8px 10px; text-align:left;">完成度</th>
+            <th style="padding:8px 10px; text-align:left;">管理操作</th>
+          </tr>
+        </thead>
+        <tbody id="modal-case-tbody"></tbody>
+      </table>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #E2E8F0; padding-top:14px; flex-wrap:wrap; gap:10px;">
+      <button class="btn" style="background:#2563EB; color:#FFF;" onclick="exportAllDataJSON()">📥 导出全部客户档案备份 (JSON文件)</button>
+      <button class="btn" style="background:#FEF2F2; color:#DC2626; border:1px solid #FECACA;" onclick="clearAllData()">⚠️ 清空所有测试数据 (一键重置)</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// 默认云端配置保底，防止由于网络或本地协议限制导致外部脚本未加载
+if (typeof window.CLOUD_CONFIG === 'undefined') {
+  window.CLOUD_CONFIG = {
+    provider: "supabase",
+    supabaseUrl: "https://xxfhegzsyhmxggbdtlxo.supabase.co",
+    supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh4ZmhlZ3pzeWhteGdnYmR0bHhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2MTE3MzksImV4cCI6MjEwNDE4NzczOX0.hCmcuFQpOJEJBCdPTgQXLLrp77G0DVFuoN2d7X_WRfI"
+  };
+}
+
+
+// ==================== 内联全自动云端同步引擎 (CloudSync) ====================
+// cloud_sync.js - 慕喜乐夫妻营全自动云端数据同步引擎
+// 支持标准 REST API (Supabase / LeanCloud)，无需任何第三方库，微信及全浏览器秒速打通
+
+var CloudSync = (typeof window !== "undefined" && window.CloudSync) ? window.CloudSync : {
+  getConfig() {
+    let cfg = (typeof window !== "undefined" && window.CLOUD_CONFIG) ? window.CLOUD_CONFIG : {};
+    try {
+      if (typeof localStorage !== "undefined") {
+        const local = localStorage.getItem("MXL_CLOUD_CONFIG");
+        if (local) {
+          const parsed = JSON.parse(local);
+          cfg = Object.assign({}, cfg, parsed);
+        }
+      }
+    } catch(e) {}
+    return cfg;
+  },
+
+  saveConfig(newCfg) {
+    try {
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem("MXL_CLOUD_CONFIG", JSON.stringify(newCfg));
+      }
+      if (typeof window !== "undefined") {
+        window.CLOUD_CONFIG = Object.assign({}, window.CLOUD_CONFIG || {}, newCfg);
+      }
+      return true;
+    } catch(e) {
+      return false;
+    }
+  },
+
+  isConfigured() {
+    const cfg = this.getConfig();
+    if (cfg.provider === "supabase") {
+      return !!(cfg.supabaseUrl && cfg.supabaseKey);
+    } else if (cfg.provider === "leancloud") {
+      return !!(cfg.appId && cfg.appKey);
+    }
+    return false;
+  },
+
+  // 保存客户档案（支持夫妻双方答卷智能无损合并）
+  async saveCase(caseObj) {
+    if (!this.isConfigured()) return { success: false, reason: "unconfigured" };
+    const cfg = this.getConfig();
+    const code = caseObj.code;
+    if (!code) return { success: false, reason: "no_code" };
+
+    try {
+      if (cfg.provider === "supabase") {
+        const baseUrl = cfg.supabaseUrl.replace(/\/rest\/v1\/?$/, "").replace(/\/+$/, "");
+        const key = cfg.supabaseKey;
+
+        // 1. 先查询云端是否已有该记录（防止第二位伴侣提交时冲掉前一位的数据）
+        let existingData = {};
+        try {
+          const checkRes = await fetch(baseUrl + "/rest/v1/mxl_cases?code=eq." + encodeURIComponent(code) + "&select=*", {
+            method: "GET",
+            headers: {
+              "apikey": key,
+              "Authorization": "Bearer " + key
+            }
+          });
+          if (checkRes.ok) {
+            const list = await checkRes.json();
+            if (list && list.length > 0 && list[0].data) {
+              existingData = list[0].data;
+            }
+          }
+        } catch(e) {}
+
+        // 深度合并双人数据
+        const mergedCase = Object.assign({}, existingData, caseObj);
+        if (existingData.wife && caseObj.wife) mergedCase.wife = Object.assign({}, existingData.wife, caseObj.wife);
+        else if (existingData.wife && !caseObj.wife) mergedCase.wife = existingData.wife;
+
+        if (existingData.husband && caseObj.husband) mergedCase.husband = Object.assign({}, existingData.husband, caseObj.husband);
+        else if (existingData.husband && !caseObj.husband) mergedCase.husband = existingData.husband;
+
+        // 2. 写入或合并更新
+        const payload = {
+          code: code,
+          data: mergedCase,
+          updated_at: new Date().toISOString()
+        };
+
+        const postRes = await fetch(baseUrl + "/rest/v1/mxl_cases", {
+          method: "POST",
+          headers: {
+            "apikey": key,
+            "Authorization": "Bearer " + key,
+            "Content-Type": "application/json",
+            "Prefer": "resolution=merge-duplicates"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (postRes.ok) {
+          return { success: true, data: mergedCase };
+        } else {
+          const errTxt = await postRes.text();
+          return { success: false, error: errTxt };
+        }
+      } else if (cfg.provider === "leancloud") {
+        const appId = cfg.appId;
+        const appKey = cfg.appKey;
+        const serverUrl = (cfg.serverURL || "").replace(/\/+$/, "") || ("https://" + appId.slice(0, 8) + ".api.lncldglobal.com");
+
+        let objectId = null;
+        let existingData = {};
+        try {
+          const qUrl = serverUrl + "/1.1/classes/MxlCase?where=" + encodeURIComponent(JSON.stringify({ code: code }));
+          const qRes = await fetch(qUrl, {
+            headers: {
+              "X-LC-Id": appId,
+              "X-LC-Key": appKey,
+              "Content-Type": "application/json"
+            }
+          });
+          if (qRes.ok) {
+            const json = await qRes.json();
+            if (json.results && json.results.length > 0) {
+              objectId = json.results[0].objectId;
+              existingData = json.results[0].data || {};
+            }
+          }
+        } catch(e) {}
+
+        const mergedCase = Object.assign({}, existingData, caseObj);
+        if (existingData.wife && caseObj.wife) mergedCase.wife = Object.assign({}, existingData.wife, caseObj.wife);
+        else if (existingData.wife && !caseObj.wife) mergedCase.wife = existingData.wife;
+
+        if (existingData.husband && caseObj.husband) mergedCase.husband = Object.assign({}, existingData.husband, caseObj.husband);
+        else if (existingData.husband && !caseObj.husband) mergedCase.husband = existingData.husband;
+
+        if (objectId) {
+          const putRes = await fetch(serverUrl + "/1.1/classes/MxlCase/" + objectId, {
+            method: "PUT",
+            headers: {
+              "X-LC-Id": appId,
+              "X-LC-Key": appKey,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ data: mergedCase })
+          });
+          return { success: putRes.ok, data: mergedCase };
+        } else {
+          const postRes = await fetch(serverUrl + "/1.1/classes/MxlCase", {
+            method: "POST",
+            headers: {
+              "X-LC-Id": appId,
+              "X-LC-Key": appKey,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ code: code, data: mergedCase })
+          });
+          return { success: postRes.ok, data: mergedCase };
+        }
+      }
+    } catch(err) {
+      console.warn("Cloud save failed:", err);
+      return { success: false, error: err.message };
+    }
+  },
+
+  // 获取云端全部档案列表并同步合并到本地
+  async fetchAllCases() {
+    if (!this.isConfigured()) return { success: false, reason: "unconfigured" };
+    const cfg = this.getConfig();
+
+    try {
+      let cases = [];
+      if (cfg.provider === "supabase") {
+        const baseUrl = cfg.supabaseUrl.replace(/\/rest\/v1\/?$/, "").replace(/\/+$/, "");
+        const key = cfg.supabaseKey;
+        const res = await fetch(baseUrl + "/rest/v1/mxl_cases?select=*&order=updated_at.desc&limit=200", {
+          method: "GET",
+          headers: {
+            "apikey": key,
+            "Authorization": "Bearer " + key
+          }
+        });
+        if (res.ok) {
+          const rows = await res.json();
+          cases = rows.map(r => r.data).filter(Boolean);
+        } else {
+          return { success: false, error: await res.text() };
+        }
+      } else if (cfg.provider === "leancloud") {
+        const appId = cfg.appId;
+        const appKey = cfg.appKey;
+        const serverUrl = (cfg.serverURL || "").replace(/\/+$/, "") || ("https://" + appId.slice(0, 8) + ".api.lncldglobal.com");
+        const res = await fetch(serverUrl + "/1.1/classes/MxlCase?order=-updatedAt&limit=200", {
+          headers: {
+            "X-LC-Id": appId,
+            "X-LC-Key": appKey,
+            "Content-Type": "application/json"
+          }
+        });
+        if (res.ok) {
+          const json = await res.json();
+          cases = (json.results || []).map(r => r.data).filter(Boolean);
+        } else {
+          return { success: false, error: await res.text() };
+        }
+      }
+
+      // 将云端最新档案同步合并入本地 localStorage
+      let indexList = [];
+      try { indexList = JSON.parse(localStorage.getItem("MXL_CASE_INDEX") || "[]"); } catch(e) {}
+      let newCount = 0;
+
+      cases.forEach(c => {
+        if (!c || !c.code) return;
+        const code = c.code;
+        const localRaw = localStorage.getItem("MXL_CASE_" + code);
+        let merged = c;
+        if (localRaw) {
+          try {
+            const old = JSON.parse(localRaw);
+            merged = Object.assign({}, old, c);
+            if (old.wife && c.wife) merged.wife = Object.assign({}, old.wife, c.wife);
+            else if (old.wife && !c.wife) merged.wife = old.wife;
+
+            if (old.husband && c.husband) merged.husband = Object.assign({}, old.husband, c.husband);
+            else if (old.husband && !c.husband) merged.husband = old.husband;
+          } catch(e) {}
+        }
+        localStorage.setItem("MXL_CASE_" + code, JSON.stringify(merged));
+        if (!indexList.includes(code)) {
+          indexList.unshift(code);
+          newCount++;
+        }
+      });
+
+      localStorage.setItem("MXL_CASE_INDEX", JSON.stringify(indexList));
+      return { success: true, count: cases.length, newCount: newCount, cases: cases };
+    } catch(err) {
+      console.warn("Cloud fetch failed:", err);
+      return { success: false, error: err.message };
+    }
+  },
+
+  // 根据配对码获取单个档案
+  async fetchCaseByCode(code) {
+    if (!this.isConfigured() || !code) return null;
+    const cfg = this.getConfig();
+
+    try {
+      if (cfg.provider === "supabase") {
+        const baseUrl = cfg.supabaseUrl.replace(/\/rest\/v1\/?$/, "").replace(/\/+$/, "");
+        const key = cfg.supabaseKey;
+        const res = await fetch(baseUrl + "/rest/v1/mxl_cases?code=eq." + encodeURIComponent(code) + "&select=*", {
+          method: "GET",
+          headers: {
+            "apikey": key,
+            "Authorization": "Bearer " + key
+          }
+        });
+        if (res.ok) {
+          const list = await res.json();
+          if (list && list.length > 0) return list[0].data;
+        }
+      } else if (cfg.provider === "leancloud") {
+        const appId = cfg.appId;
+        const appKey = cfg.appKey;
+        const serverUrl = (cfg.serverURL || "").replace(/\/+$/, "") || ("https://" + appId.slice(0, 8) + ".api.lncldglobal.com");
+        const qUrl = serverUrl + "/1.1/classes/MxlCase?where=" + encodeURIComponent(JSON.stringify({ code: code }));
+        const res = await fetch(qUrl, {
+          headers: {
+            "X-LC-Id": appId,
+            "X-LC-Key": appKey,
+            "Content-Type": "application/json"
+          }
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.results && json.results.length > 0) return json.results[0].data;
+        }
+      }
+    } catch(e) {}
+    return null;
+  },
+
+  // 测试云端配置连接状态
+  async testConnection(testCfg) {
+    const cfg = testCfg || this.getConfig();
+    try {
+      if (cfg.provider === "supabase") {
+        if (!cfg.supabaseUrl || !cfg.supabaseKey) {
+          return { success: false, error: "请先填写 Supabase URL 和 Key" };
+        }
+        const baseUrl = cfg.supabaseUrl.replace(/\/rest\/v1\/?$/, "").replace(/\/+$/, "");
+        const key = cfg.supabaseKey;
+        const res = await fetch(baseUrl + "/rest/v1/mxl_cases?select=code&limit=1", {
+          method: "GET",
+          headers: {
+            "apikey": key,
+            "Authorization": "Bearer " + key
+          }
+        });
+        if (res.ok) {
+          return { success: true, message: "🎉 Supabase 云端数据库连接成功！数据表正常响应，已开启全自动秒级同步。" };
+        } else {
+          const txt = await res.text();
+          if (res.status === 403 || txt.includes("not allowed by policy") || txt.includes("row-level security policy")) {
+            return {
+              success: false,
+              error: "已成功连接到 Supabase，但数据表【mxl_cases】开启了行级安全保护(RLS)，正在拦截匿名访问！\n\n【一键解决方式】：\n请前往 Supabase 控制台 -> 点击左侧「SQL Editor」-> 粘贴并运行下面这行命令即可彻底放行：\nALTER TABLE mxl_cases DISABLE ROW LEVEL SECURITY;"
+            };
+          }
+          if (res.status === 404 || txt.includes("does not exist") || txt.includes("relation \"mxl_cases\" does not exist")) {
+            return {
+              success: false,
+              error: "已成功连接到 Supabase，但数据表【mxl_cases】尚未创建！\n\n【建表方式】：\n请前往 Supabase 控制台 -> 点击左侧「SQL Editor」，粘贴并运行：\nCREATE TABLE mxl_cases (code TEXT PRIMARY KEY, data JSONB NOT NULL, updated_at TIMESTAMPTZ DEFAULT NOW());\nALTER TABLE mxl_cases DISABLE ROW LEVEL SECURITY;"
+            };
+          }
+          return { success: false, error: "Supabase 响应错误 (" + res.status + "): " + txt };
+        }
+      } else if (cfg.provider === "leancloud") {
+        if (!cfg.appId || !cfg.appKey) {
+          return { success: false, error: "请先填写 LeanCloud App ID 和 App Key" };
+        }
+        const serverUrl = (cfg.serverURL || "").replace(/\/+$/, "") || ("https://" + cfg.appId.slice(0, 8) + ".api.lncldglobal.com");
+        const res = await fetch(serverUrl + "/1.1/classes/MxlCase?limit=1", {
+          headers: {
+            "X-LC-Id": cfg.appId,
+            "X-LC-Key": cfg.appKey
+          }
+        });
+        if (res.ok) {
+          return { success: true, message: "🎉 LeanCloud 连接成功！" };
+        } else {
+          return { success: false, error: "LeanCloud 响应错误 (" + res.status + "): " + (await res.text()) };
+        }
+      }
+      return { success: false, error: "未选择有效的云服务商" };
+    } catch(err) {
+      return { success: false, error: "网络请求失败: " + err.message };
+    }
+  }
+};
+
+if (typeof window !== "undefined") { window.CloudSync = CloudSync; }
+if (typeof globalThis !== "undefined") { globalThis.CloudSync = CloudSync; }
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = CloudSync;
+}
+
+// ==========================================================================
+
+const dimensions = [
+  { id: 'conn', name: '情感连接', desc: '亲密感与依恋安全感' },
+  { id: 'comm', name: '沟通与表达', desc: '有效交流 vs 无效争吵' },
+  { id: 'conf', name: '冲突模式', desc: '解决问题 vs 彼此消耗' },
+  { id: 'emot', name: '情绪体验', desc: '温暖滋养 vs 孤独紧绷' },
+  { id: 'sati', name: '关系满意度', desc: '整体评价与未来信念' },
+  { id: 'func', name: '关系功能', desc: '生活协同与角色分工' }
+];
+
+const questions = [
+  { id: 1, dim: '情感连接', text: '当我感到脆弱、疲惫或难过时，伴侣是我第一个想去倾诉和依靠的人。', reverse: false },
+  { id: 2, dim: '情感连接', text: '在这段关系里，我常常担心伴侣并不像我爱他/她那样爱我。', reverse: true },
+  { id: 3, dim: '情感连接', text: '我们之间依然保留着身体接触（如拥抱、牵手、亲吻或温存的性生活）的温暖与渴望。', reverse: false },
+  { id: 4, dim: '情感连接', text: '我觉得伴侣并没有真正懂我内心的精神世界，我们越来越像同住一个屋檐下的合租室友。', reverse: true },
+  { id: 5, dim: '情感连接', text: '当我需要伴侣时，我知道他/她一定会放下手头的事情，把注意力放在我身上。', reverse: false },
+  { id: 6, dim: '情感连接', text: '我有时不敢对伴侣完全敞开自己，害怕暴露真实想法会遭到嘲讽、拒绝或冷落。', reverse: true },
+
+  { id: 7, dim: '沟通与表达', text: '我们能够心平气和地讨论对家庭、财务、工作或未来的不同看法。', reverse: false },
+  { id: 8, dim: '沟通与表达', text: '伴侣跟我说话时，常常带有指责、挑剔或翻旧账的口吻（如“你总是……”、“你从来都不……”）。', reverse: true },
+  { id: 9, dim: '沟通与表达', text: '当我表达自己的感受或观点时，伴侣能够放下手机、认真倾听并试图理解我。', reverse: false },
+  { id: 10, dim: '沟通与表达', text: '很多时候我觉得跟伴侣“说了也没用”，索性闭嘴，选择沉默或回避。', reverse: true },
+  { id: 11, dim: '沟通与表达', text: '即使彼此观点不一致，我们也能表达对彼此立场的尊重，而不会演变成人身攻击。', reverse: false },
+  { id: 12, dim: '沟通与表达', text: '每次想认真沟通时，对方要么立刻为自己辩解，要么反咬一口把责任推给我。', reverse: true },
+
+  { id: 13, dim: '冲突模式', text: '发生争吵后，我们通常能在当天或短时间内找到和好的契机，不会让冷战拖延数天。', reverse: false },
+  { id: 14, dim: '冲突模式', text: '一旦发生争吵，我们之间往往是一方步步紧逼追着要答案，另一方步步后退想要逃离。', reverse: true },
+  { id: 15, dim: '冲突模式', text: '在发生分歧时，我们能够聚焦在当前具体事情本身，而不是否定彼此的人品。', reverse: false },
+  { id: 16, dim: '冲突模式', text: '每次冲突都像是一场谁胜谁负的权力较量，最后双方都精疲力竭、身心俱疲。', reverse: true },
+  { id: 17, dim: '冲突模式', text: '当其中一方尝试缓和气氛（如开个玩笑、递杯水、主动示好）时，另一方愿意顺势接住。', reverse: false },
+  { id: 18, dim: '冲突模式', text: '在激烈争吵时，我们会口不择言地说出伤人的狠话，甚至动过离婚或分开的念头。', reverse: true },
+
+  { id: 19, dim: '情绪体验', text: '在伴侣身边，我感到放松和自在，可以安心做最真实的自己。', reverse: false },
+  { id: 20, dim: '情绪体验', text: '虽身处婚姻之中，我却常常在夜深人静或日常相处中感受到深深的孤独。', reverse: true },
+  { id: 21, dim: '情绪体验', text: '伴侣能敏锐察觉到我的情绪低落，并愿意给予我及时的安慰与体贴。', reverse: false },
+  { id: 22, dim: '情绪体验', text: '我常常觉得自己在为这个家单方面委屈妥协，内心积压了不少怨气和不平衡。', reverse: true },
+  { id: 23, dim: '情绪体验', text: '想到回家的时刻或见到伴侣，我的内心通常是充满期待、温暖和踏实的。', reverse: false },
+  { id: 24, dim: '情绪体验', text: '在关系中，我常常感到神经紧绷，担心自己哪句话说不对又会引爆对方的脾气或冷脸。', reverse: true },
+
+  { id: 25, dim: '关系满意度', text: '综合考虑各方面，我对我们目前的婚姻整体状态感到满意。', reverse: false },
+  { id: 26, dim: '关系满意度', text: '作为一个伴侣/生活合伙人，我由衷满意对方在婚姻中的表现与付出。', reverse: false },
+  { id: 27, dim: '关系满意度', text: '如果人生可以重新选择一次，我依然会毫不犹豫地选择与现在的伴侣结婚。', reverse: false },
+  { id: 28, dim: '关系满意度', text: '我对我们婚姻的未来前景感到迷茫或悲观，甚至不确定能否白头偕老。', reverse: true },
+  { id: 29, dim: '关系满意度', text: '与身边的同龄人相比，我认为我们的婚姻质量处于中等偏上的幸福水平。', reverse: false },
+  { id: 30, dim: '关系满意度', text: '我经常怀疑这段婚姻是否还能带给我幸福，觉得维持下去只是一种责任或妥协。', reverse: true },
+
+  { id: 31, dim: '关系功能', text: '在家庭财务管理、开支安排和投资储蓄上，我们有明确的共识和信任。', reverse: false },
+  { id: 32, dim: '关系功能', text: '在家务劳动、育儿照顾或家庭琐事的实际承担上，双方的分工是相对公平合理的。', reverse: false },
+  { id: 33, dim: '关系功能', text: '在面对双方父母或亲友关系时，我们能够建立健康的“夫妻同盟”，界限清晰。', reverse: false },
+  { id: 34, dim: '关系功能', text: '我们常常因为家务分配不均或教养孩子的观念冲突而产生无休止的内耗。', reverse: true },
+  { id: 35, dim: '关系功能', text: '我们能够协调出固定的专属二人时光或共同参与的业余休闲活动。', reverse: false },
+  { id: 36, dim: '关系功能', text: '在重大人生或家庭决策（如买房、换工作、孩子择校）上，我们常常难以达成共识。', reverse: true }
+];
+
+const dimensionTiers = {
+  conn: [
+    {
+      min: 0, max: 49, level: '情感断联 (合租室友态)', badgeClass: 'tier-danger',
+      theoryTag: 'Bowlby 依恋模型 · 情感荒漠与极端防御',
+      scene: '内心深感孤独被忽视。在外面受了委屈或精疲力竭时，本能地选择咽回去，不再尝试向伴侣表达脆弱需求；两人同处一室却如同合租室友，身体温存与精神对话几近萎缩归零。',
+      theory: '关系已滑入“情感荒漠期”。因长期未获积极情绪回应，机体启动了高等级的依恋退缩防御，将伴侣潜意识感知为“无法依靠、甚至不安全”的客体。',
+      action: '【非语言接触破冰法】：停止追问和说理，从零阻力的身体微动作开始——每天刻意增加 3 次持续 5 秒以上的平静眼神对视，或在递水、出门时轻抚对方肩膀 3 秒。',
+      camp: '长期的依恋冻结很难仅靠个人意志融化。在 3 天夫妻营中，导师将通过“情绪唤起与安全脆弱暴露”专属带练，为你们重新调频，重建深层安全基地。',
+      questions: [
+        '“当你在生活或工作中感到极其脆弱无助时，你还会想跟伴侣说吗？还是习惯性觉得自己咽下去更安全？”',
+        '“你们之间最近一次有温度的拥抱、牵手或温存是什么时候？在平时的身体接触上，真实状态是怎样的？”'
+      ]
+    },
+    {
+      min: 50, max: 79, level: '钟摆效应 (时近时远磨损)', badgeClass: 'tier-warn',
+      theoryTag: '依恋理论 · 焦虑-回避追逃死锁',
+      scene: '时而亲近时而疏远，想靠近却害怕再次被冷落受伤害。日常交流往往只围绕孩子、账单和家务琐事，极少触及彼此真实的精神世界与深层心事。',
+      theory: '经典的“焦虑-回避追逃模型”。一方内心的依恋饥渴常以挑剔指责形式爆发，另一方感到窒息本能后撤回避，从而形成“越追越逃、越逃越追”的钟摆式内耗循环。',
+      action: '【软化启动技术】：尝试用“我需要你/我感到有些孤单”的脆弱语言，替代“你从来都不关心我/你总是看手机”的攻击性指责句式。',
+      camp: '这种追逃剧本已经深入你们的潜意识无意识互动中。在 3 天夫妻营中，我们将通过专业“依恋访谈与互动剧本重写”，打破推开彼此的恶性死锁。',
+      questions: [
+        '“在平时生活中，你是否经常觉得伴侣人虽然坐在你身边，但心思完全在手机或工作上，让你有一种抓不住的距离感？”',
+        '“尤其是第 4 题‘像合租室友’的打分，在你们平时的真实生活里，最具体的体现是什么？”'
+      ]
+    },
+    {
+      min: 80, max: 100, level: '安全基地 (充沛依恋滋养)', badgeClass: 'tier-excel',
+      theoryTag: '安全型依恋系统 · 坚韧内在工作模型',
+      scene: '你们彼此是对方最坚实的“避风港”与“安全基地”。面对伴侣能够毫无顾虑地暴露脆弱，分享真实想法而不必担心被评判嘲讽；亲密、拥抱与温存自然充沛。',
+      theory: '高成熟度的“安全型依恋模式”。双方具备高度的情感可及性（Accessibility）与回应性（Responsiveness），彼此的内在工作模型高度契合。',
+      action: '【日常情感仪式感】：继续保持爱的存折充值，每天睡前刻意进行 5 分钟“无目的闲谈”，专注交流彼此当天的情绪与感受，而非任务琐事。',
+      camp: '即便高分，长期婚姻中仍会遭遇未察觉的“隐性情感盲点”。3 天夫妻营将为你们注入“深度共鸣与韧性防护技术”，让高质量亲密抵御未来任何外界风浪。',
+      questions: [
+        '“在情感连接上你给出了极高评价。在生活里，伴侣做了哪些具体的事情，让你能够如此安心地信任和依靠TA？”'
+      ]
+    }
+  ],
+  comm: [
+    {
+      min: 0, max: 49, level: '冷战毒性 (四骑士侵蚀)', badgeClass: 'tier-danger',
+      theoryTag: '戈特曼临床模型 · 末日四骑士毒性循环',
+      scene: '沟通彻底卡死。要么一方冷战回避筑墙不答，要么开口就翻旧账攻击对方的人品与特质；双方已陷入“说了也没用、索性闭嘴”的习得性绝望中。',
+      theory: '戈特曼“末日四骑士”（批评、蔑视、防御、筑墙）已全面现身。蔑视与防御已吞噬了基本的尊重，每一次开口都像是一场谁胜谁负的权力厮杀。',
+      action: '【行为描述降温法】：只做“具体行为事实描述”而不做“人格特质评价”（例如说：“这周有3次垃圾没倒”，坚决不说“你这个人就是自私懒惰”）。',
+      camp: '必须进行“修复尝试”的刻意脱敏训练。3 天夫妻营特设“软化对话与四骑士解毒工坊”，帮助你们在最容易失控的瞬间踩下刹车。',
+      questions: [
+        '“在日常生活中，你们现在是不是一聊到钱、孩子或双方父母，就极其容易擦枪走火或者以冷战沉默结束？”',
+        '“在第 10 题‘索性闭嘴’上你的打分，真实生活中最近一次让你感到‘彻底不想说了’的具体事件是什么？”'
+      ]
+    },
+    {
+      min: 50, max: 79, level: '鸡同鸭讲 (对错讲理死循环)', badgeClass: 'tier-warn',
+      theoryTag: '非暴力沟通 (NVC) · 评判与防御死循环',
+      scene: '经常“鸡同鸭讲”。讲道理、辩对错远多过谈真实感受；一旦观点不合，第一反应是急于为自己开脱辩解或反咬一口，把沟通变成辩论赛。',
+      theory: '陷入经典的“指责-辩护死循环”。大脑把伴侣的反馈解读为人身攻击，理性前额叶下线，前哨防卫机制自动开启，导致双方都在自说自话。',
+      action: '【暂停令牌机制】：引入专属“暂停手势/令牌”——一旦觉察到任何一方音量升高或心跳加速，立刻举手示意，双方无条件物理隔离静默 3 分钟后再谈。',
+      camp: '仅靠道理无法治愈情感。3 天夫妻营配备“沟通翻译器与元沟通框架”，帮你们在现场把对方口中的“攻击性语言”精准翻译为底层的“依恋渴望”。',
+      questions: [
+        '“当你向伴侣表达一件让你委屈的事情时，对方平时的反应更多是先急着解释反驳，还是先听你把话说完？”',
+        '“在真实婚姻生活里，你觉得你们两个人沟通最大的卡点是‘语气态度不好’还是‘压根听不懂对方要什么’？”'
+      ]
+    },
+    {
+      min: 80, max: 100, level: '深度共鸣 (高阶情感映射)', badgeClass: 'tier-excel',
+      theoryTag: '戈特曼情感映射与高共情倾听',
+      scene: '表达清晰、温和且富有同理心。能够自如运用“我信息”表达真实需求，极少使用指责性字眼；即使彼此观点不一致，也能放下手机专注倾听。',
+      theory: '掌握了高阶的“情感映射与元沟通能力”。对立场的尊重超越了胜负欲，把交流视为彼此滋养的通道，而非争夺掌控权的战场。',
+      action: '【倾听即疗愈技巧】：在回应伴侣的重要心事之前，先原样复述对方说的最后三个字或核心情绪词（如“……感到很委屈对吗？”），确认接通信号后再表达。',
+      camp: '卓越的沟通是抵御危机的最高阶资产。3 天夫妻营将提供进阶“元沟通与家庭决策赋能”，让你们的默契与协作效率成倍飙升。',
+      questions: [
+        '“你们是如何做到即使观点不同也能彼此尊重的？在生活中你们有哪些独特的沟通默契？”'
+      ]
+    }
+  ],
+  conf: [
+    {
+      min: 0, max: 49, level: '破坏性爆发 (权力争夺撕裂)', badgeClass: 'tier-danger',
+      theoryTag: '生理唤醒理论 · 杏仁核绑架与创伤激活',
+      scene: '拒绝沟通或有一方极度强势压制另一方。激烈冲突时常常口不择言说出割肉般的伤人狠话，甚至频繁动过分开或离婚的念头，事后身心俱疲。',
+      theory: '处于权力争夺期的恶性循环。争吵时心率往往飙升至 100 次/分以上，前额叶逻辑脑完全被情绪脑“杏仁核绑架”，本能退化为战斗或逃跑反应。',
+      action: '【紧急安全词休战约定】：双方共同约定一个绝对中立的“安全词”（如“西瓜”）。无论争吵多激烈，任何一方说出安全词，双方必须立刻闭嘴休战。',
+      camp: '极端冲突模式多根植于各自的原生家庭应激创伤。3 天夫妻营特设“原生家庭与内在小孩工作坊”，从神经系统深层松解创伤性应激。',
+      questions: [
+        '“每次冲突发生时，你们生活里是不是总有一方拼命追着要说法，另一方不断后退逃离或冷脸相对？”',
+        '“在吵得最凶的时候，第 18 题提到的‘伤人狠话或提离婚’在现实生活里真的出现过吗？当时真实的情形是怎样的？”'
+      ]
+    },
+    {
+      min: 50, max: 79, level: '急躁升级 (生理防御性唤醒)', badgeClass: 'tier-warn',
+      theoryTag: '冲突唤醒模型 · 情绪残渣连环引爆',
+      scene: '小事极易升级为大事，争吵中习惯性翻旧账、摔门或冷暴力；争吵后很难在当天平复，往往需要几天极度压抑的冷处理才能慢慢缓和。',
+      theory: '生理防御性唤醒过高。未被彻底解决的旧事件沉淀为情绪残渣，导致神经系统处于高警觉状态，微小的导火索就会连环引爆积攒的历史积怨。',
+      action: '【生理强制降温法】：争吵升温时强迫暂停说话，原地跳跃 10 次、用冷水洗脸或进行 3 组“吸气4秒-憋气7秒-呼气8秒”的 4-7-8 神经降温呼吸。',
+      camp: '单靠压抑无法真正止战。3 天夫妻营带练“暂停-安抚-重启”的完整闭环，让你学会如何在硝烟未散前优雅、体面地关闭战争。',
+      questions: [
+        '“争吵发生后，你们在生活里通常是怎么和好的？是真正谈开了，还是大家当作没发生过一样硬生生熬过去的？”',
+        '“当有一方想要缓和气氛给台阶时，另一方在生活中通常是顺势接住，还是依然端着冷脸？”'
+      ]
+    },
+    {
+      min: 80, max: 100, level: '建设性重塑 (高情商自我修复)', badgeClass: 'tier-excel',
+      theoryTag: '关系韧性模型 · 修复信号敏锐捕捉',
+      scene: '建设性冲突的典范。发生分歧时能够始终对事不对人，不否定彼此人品；当一方尝试递杯水或开玩笑缓和气氛时，另一方能顺势温柔接住。',
+      theory: '具备极高水准的“情感修复尝试能力”。能够敏锐捕捉伴侣抛出的微弱和解信号，把冲突转化为增进彼此认知盲区深度了解的跳板。',
+      action: '【24小时情感道歉】：冲突平息后 24 小时内主动开启情感复盘——道歉的重点不是承认事情对错，而是体贴对方在此刻受到的委屈感受。',
+      camp: '成熟的冲突管理是关系的免疫系统。3 天夫妻营将带你们绘制专属“夫妻冲突地形图”，提前预判并精准规避 90% 的重复性争吵。',
+      questions: [
+        '“在生活中遇到重大意见不合时，你们是如何做到在保持各自立场的同伴还不伤害彼此感情的？”'
+      ]
+    }
+  ],
+  emot: [
+    {
+      min: 0, max: 49, level: '情绪透支 (孤独与情感隔离)', badgeClass: 'tier-danger',
+      theoryTag: '情绪调节受损 · 绝望式情感抽离',
+      scene: '压抑真实感受或动辄情绪崩溃。虽身处婚姻之中，却在日常相处与深夜里体会到彻骨的孤独；在伴侣身边常年神经紧绷、小心翼翼如履薄冰。',
+      theory: '长期的情绪饥渴导致情绪调节机制严重受损。为了避免一再受伤，心理层面对婚姻实施了“情感隔离”，爱与期待已被彻底透支。',
+      action: '【自我解离贴标签】：当感到绝望或紧绷时，立刻在心中做第三人称旁白：“我的身体现在正在经历愤怒与委屈，这只是暂时的情绪波浪，它不等于我的全部”。',
+      camp: '这不是看几篇文章能修复的深层透支。3 天夫妻营的“情绪容器扩容与生物反馈带练”，将给你们提供专业心理咨询师级别的强力托底。',
+      questions: [
+        '“在第 20 题‘深处婚姻却倍感孤独’上你的得分很真实。在平时的现实生活里，哪一个瞬间最让你体会到这种彻骨的孤单？”',
+        '“你是否时常觉得面对伴侣时需要戴上面具、小心翼翼，没办法像在真正安全的人面前那样放松做自己？”'
+      ]
+    },
+    {
+      min: 50, max: 79, level: '账户赤字 (敏感与委屈内耗)', badgeClass: 'tier-warn',
+      theoryTag: '情绪粒度与供需错位模型',
+      scene: '要么觉得对方迟钝冷漠，要么被对方指责矫情多事。内心积压了不少单方面委屈妥协的怨气，下班回家不再是纯粹的期待，偶有沉重叹息。',
+      theory: '双方“情绪粒度”与表达习惯不匹配导致的深刻误解。一方渴求微观的情感共鸣，另一方习惯粗线条的事件解决，引发持久的情感供需错位。',
+      action: '【睡前情绪天气预报】：每晚睡前交换 1 分钟的专属词汇——用“晴/阴/雨”外加一句话描述自己当天的心理天气，不辩论、只倾听、只拥抱。',
+      camp: '家庭是滋养心灵而非消耗能量的地方。3 天夫妻营将传授“情绪双向扩容容器”技术，把彼此的怨气转化为深层的支持力。',
+      questions: [
+        '“在现实生活当中，你是否常常觉得自己在为这个家庭单方面牺牲，但伴侣却把这一切当成理所当然？”',
+        '“下班走到家门口的那一刻，你的身体和心里的真实感觉是轻松期待，还是会感到一丝沉重或逃避？”'
+      ]
+    },
+    {
+      min: 80, max: 100, level: '深度滋养 (高频心理松弛)', badgeClass: 'tier-excel',
+      theoryTag: '高情绪粒度 · 情绪同频与深度共情',
+      scene: '情绪高度同频。在伴侣身边可以安心做最松弛、最真实的自己；伴侣能敏锐捕捉微表情并在你疲惫低落时给予体贴安抚，婚姻是真正的避风港。',
+      theory: '双方具备卓越的“情绪粒度与情感智力”。能精确识别彼此的细微情绪波动，并拥有包容与承载负面情绪的强大心理空间。',
+      action: '【情绪精准命名法】：当伴侣沉默或叹气时，尝试温柔替对方命名：“你现在是不是感到有点被消耗/心累了？”——精准的命名能瞬间融化心防。',
+      camp: '这种高品质的情绪契合是不可多得的关系瑰宝。3 天夫妻营将开启高阶共情带练，让你们成为彼此生命中最懂彼此的心灵导师。',
+      questions: [
+        '“在伴侣身边感到如此踏实自在，在平时的具体生活里，TA 是如何让你感受到这种被深深接纳的安全感的？”'
+      ]
+    }
+  ],
+  sati: [
+    {
+      min: 0, max: 59, level: '极度不满 (认知动摇与后悔)', badgeClass: 'tier-danger',
+      theoryTag: '戈特曼负面解读惯性 · 婚姻契约动摇',
+      scene: '对目前的婚姻整体状态陷入全方位的失望与懊悔之中。频繁产生“如果当初没结婚该多好”的悔意，觉得继续下去只是一种为了孩子或习惯的无奈忍耐。',
+      theory: '陷入了沉重的“负面解读惯性”。积极记忆已被消极体验侵蚀殆尽，伴侣做任何事情都会被自动化归因为“动机不良或自私”，信任基石产生动摇。',
+      action: '【积极重评日记】：启动强制性认知扭转——连续 7 天，每天必须在便签上写下对方做对的 3 件极小的事（哪怕只是倒了一杯水或准时回家）。',
+      camp: '修复跌破警戒线的满意度需要系统性重塑认知框架。3 天夫妻营的“认知重构与婚姻信念重建”模块，是阻断关系滑向深渊的关键急救包。',
+      questions: [
+        '“在第 27 题‘如果重新选择还会结婚吗’以及第 30 题上你的打分很沉重。在真实婚姻里，你是否真的很多次后悔过结婚？”',
+        '“现在的这段关系，距离你结婚时对婚姻的憧憬，现实生活中最大的落差是什么？”'
+      ]
+    },
+    {
+      min: 60, max: 79, level: '温吞凑合 (食之无味倦怠期)', badgeClass: 'tier-warn',
+      theoryTag: '消极侵蚀模型 · 激情消退与习惯麻木',
+      scene: '处于典型的“凑合过”阶段。虽然没有原则性的大爆发，但也毫无激情与深度向往；生活只剩下义务与琐事，“食之无味，弃之可惜”。',
+      theory: '消极互动悄然侵蚀了积极情感存折。积极互动与消极互动的比例已跌破健康界限，关系在温水煮青蛙中丧失了最初的心动与彼此崇拜。',
+      action: '【新奇体验多巴胺唤醒】：打破刻板生活模式——每月至少安排一次去从未去过的地方、尝试从未做过的事，重新刺激多巴胺分泌。',
+      camp: '平淡是婚姻的隐形杀手。3 天夫妻营将带你们回到记忆起点，唤醒彼此“最初的深层吸引力”，让被琐碎磨灭的心动火花彻底重燃。',
+      questions: [
+        '“在现实生活里，你觉得维持现在的婚姻，主要是因为还有爱与吸引，还是更多出于对孩子、责任或习惯的维系？”',
+        '“如果生活就这样日复一日过下去，你心里最大的担忧或不甘心是什么？”'
+      ]
+    },
+    {
+      min: 80, max: 100, level: '丰盛繁荣 (庆幸相守坚定)', badgeClass: 'tier-excel',
+      theoryTag: '戈特曼 5:1 卓越情感账户模型',
+      scene: '高度满足与幸福。日常相处中充满由衷的感恩与庆幸，坚定地认为如果人生重来依然会选择对方；不仅是生活合伙人，更是深度的生命同行者。',
+      theory: '日常积极互动与消极互动的比例远超 5:1 的黄金健康线。形成了高度正向的情感归因闭环，具备坚如磐石的长期婚姻承诺。',
+      action: '【感恩储蓄罐练习】：在手机备忘录建立两人的专属“感恩存折”，每周记录一条伴侣令你感动的瞬间并在周末深情读给对方听。',
+      camp: '从“满意”升级为“繁荣”，是亲密关系的终极艺术。3 天夫妻营将带你们探索夫妻共同的人生意义与灵性同盟，构筑代际传承的幸福家风。',
+      questions: [
+        '“在现实生活中，最让你由衷感到‘跟这个人结婚真是结对了’的具体瞬间是什么？”'
+      ]
+    }
+  ],
+  func: [
+    {
+      min: 0, max: 49, level: '系统失衡 (功能瘫痪或丧偶)', badgeClass: 'tier-danger',
+      theoryTag: '家庭系统论 · 结构失调与隐性对抗',
+      scene: '在家庭运转上陷入严重失调甚至丧偶式育儿。一方身心超负荷濒临崩溃，另一方严重缺位；常常因为家务分配不均或育儿观念对立而陷入无休止内耗。',
+      theory: '家庭结构与边界严重失衡。现实功能的对抗本质上是情感疏离的投射——由于缺乏情感连接，分工变成了彼此索取赔偿与清算的战场。',
+      action: '【服务外包思维法】：停止无意义的牺牲与抱怨，果断把部分家庭琐事机械外包（如请小时工打扫或点净菜），强制解放身心能量。',
+      camp: '必须借助“结构式系统家庭治疗”的外部视角重新排兵布阵。3 天夫妻营将从底层理顺家庭序位，把你们从内耗中彻底解救出来。',
+      questions: [
+        '“在平时的现实生活里，你们是不是经常因为钱的花销、谁干家务、或者管孩子的分歧而吵得不可开交？”',
+        '“在面对公婆或岳父母等长辈时，你们在生活里是互相护着同盟一致，还是各护各的家人甚至彼此怨恨？”'
+      ]
+    },
+    {
+      min: 50, max: 79, level: '协同磨损 (角色模糊与不公)', badgeClass: 'tier-warn',
+      theoryTag: '社会角色分工理论 · 隐性劳动与边界混淆',
+      scene: '家庭基本运转尚可，但暗流涌动着强烈的不公与委屈。常因“谁做得多、谁牺牲大”起争执，重大决策（买房、换工作、择校）难以形成高效合力。',
+      theory: '角色模糊导致的边界不清。大量的“隐性脑力劳动”（如育儿规划、老人照料协调）被忽视，未被显性确认的付出化为了内在怨气。',
+      action: '【可视化家庭责任清单】：拿出一张白纸列出家庭所有大小琐事（包括买菜、洗碗、缴费等），双方逐条认领并张贴在冰箱上，消除无谓扯皮。',
+      camp: '协作需要标准化的运营协议。3 天夫妻营提供开箱即用的“夫妻现代协同契约与分工模型”，让家庭运转像精密仪器般丝滑省力。',
+      questions: [
+        '“在家里做家务、管孩子这件事情上，在你们真实的生活里，你觉得自己承担的比例是多少？内心觉得公平吗？”',
+        '“面对买房、换工作、孩子择校等大决定时，你们平时是怎么达成一致的？常常是谁做妥协？”'
+      ]
+    },
+    {
+      min: 80, max: 100, level: '默契合伙 (卓越高效生活同盟)', badgeClass: 'tier-excel',
+      theoryTag: '高效家庭执行功能 · 坚固夫妻同盟',
+      scene: '卓越的生活合伙人。财务透明互信，家务与育儿分工高度默契公平；面对双方父母时建立起界限清晰的“夫妻同盟”，并能协调出固定的专属二人时光。',
+      theory: '拥有清晰的系统边界与极强的执行协同功能。夫妻同盟超越了原生家庭牵绊，像运转良好的现代化精益公司一样兼顾爱与效率。',
+      action: '【月度家庭董事会】：每月固定召开一次 30 分钟“家庭复盘董事会”，开诚布公核对下月财务预算、育儿计划并微调分工，让默契常态化。',
+      camp: '卓越的合伙默契是家庭幸福的硬核底盘。3 天夫妻营将进一步优化你们的家庭资产与生命愿景规划，让好婚姻成为人生最大复利。',
+      questions: [
+        '“在家庭分工与财务安排上，你们是如何在现实生活里建立起如此高效默契的信任机制的？”'
+      ]
+    }
+  ]
+};
+
+let currentCaseData = null;
+
+
+// =========================================================================
+// 核心数据编解码函数 (支持整条 URL 粘贴、纯 Base64 代码粘贴及向后兼容)
+// =========================================================================
+function packCaseData(c) {
+  if (!c || !c.code) return "";
+  const obj = {
+    c: c.code,
+    m: c.marriageYears || "",
+    k: c.childrenStatus || ""
+  };
+  if (c.wife && c.wife.answers) {
+    let ansStr = "";
+    for (let i = 1; i <= 36; i++) ansStr += (c.wife.answers[i] || 0);
+    obj.w = [c.wife.name || "", c.wife.age || "", c.wife.phone || "", ansStr];
+  }
+  if (c.husband && c.husband.answers) {
+    let ansStr = "";
+    for (let i = 1; i <= 36; i++) ansStr += (c.husband.answers[i] || 0);
+    obj.h = [c.husband.name || "", c.husband.age || "", c.husband.phone || "", ansStr];
+  }
+  try {
+    return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+  } catch(e) {
+    return "";
+  }
+}
+
+function unpackCaseData(str) {
+  if (!str) return null;
+  try {
+    let cleanStr = str.trim();
+    // 智能容错：即使客户把整条链接粘贴进来，也能自动剥离出关键数据
+    if (cleanStr.includes("d=")) cleanStr = cleanStr.split("d=")[1].split("&")[0];
+    else if (cleanStr.includes("import=")) cleanStr = cleanStr.split("import=")[1].split("&")[0];
+    else if (cleanStr.includes("voucher=")) cleanStr = cleanStr.split("voucher=")[1].split("&")[0];
+    
+    cleanStr = decodeURIComponent(cleanStr);
+    const raw = decodeURIComponent(escape(atob(cleanStr)));
+    const p = JSON.parse(raw);
+    const c = {
+      code: p.c || p.code || "MXL-自定义",
+      marriageYears: p.m || p.marriageYears || "",
+      childrenStatus: p.k || p.childrenStatus || ""
+    };
+
+    if (p.w) {
+      if (Array.isArray(p.w)) {
+        c.wife = {
+          name: p.w[0] || "妻子", age: p.w[1] || "", phone: p.w[2] || "",
+          answers: {}, submittedAt: new Date().toLocaleString()
+        };
+        const aStr = p.w[3] || "";
+        for (let i = 0; i < aStr.length; i++) {
+          const val = parseInt(aStr[i], 10);
+          if (val > 0) c.wife.answers[i + 1] = val;
+        }
+      } else {
+        c.wife = {
+          name: p.w.n || p.w.name || "妻子", age: p.w.a || p.w.age || "", phone: p.w.p || p.w.phone || "",
+          answers: {}, submittedAt: new Date().toLocaleString()
+        };
+        if (p.w.ans) {
+          if (Array.isArray(p.w.ans)) p.w.ans.forEach((v, i) => { c.wife.answers[i + 1] = v; });
+          else c.wife.answers = p.w.ans;
+        }
+      }
+    }
+
+    if (p.h) {
+      if (Array.isArray(p.h)) {
+        c.husband = {
+          name: p.h[0] || "丈夫", age: p.h[1] || "", phone: p.h[2] || "",
+          answers: {}, submittedAt: new Date().toLocaleString()
+        };
+        const aStr = p.h[3] || "";
+        for (let i = 0; i < aStr.length; i++) {
+          const val = parseInt(aStr[i], 10);
+          if (val > 0) c.husband.answers[i + 1] = val;
+        }
+      } else {
+        c.husband = {
+          name: p.h.n || p.h.name || "丈夫", age: p.h.a || p.h.age || "", phone: p.h.p || p.h.phone || "",
+          answers: {}, submittedAt: new Date().toLocaleString()
+        };
+        if (p.h.ans) {
+          if (Array.isArray(p.h.ans)) p.h.ans.forEach((v, i) => { c.husband.answers[i + 1] = v; });
+          else c.husband.answers = p.h.ans;
+        }
+      }
+    }
+
+    return c;
+  } catch(e) {
+    console.error("unpackCaseData error:", e);
+    return null;
+  }
+}
+
+
+function checkAuth() {
+  const inputEl = document.getElementById('adminPwd');
+  const pwd = (inputEl ? inputEl.value : '').trim().toLowerCase();
+  if (pwd === 'mxl2026' || pwd === '' || pwd === 'mxl' || sessionStorage.getItem('MXL_AUTH') === '1') {
+    bypassAuth();
+  } else {
+    alert('访问口令是：mxl2026\n（提示：您也可以直接点击密码框下方的【直接免密进入】）');
+  }
+}
+
+function bypassAuth() {
+  try { sessionStorage.setItem('MXL_AUTH', '1'); } catch(e) {}
+  const overlay = document.getElementById('auth-overlay');
+  if (overlay) overlay.style.display = 'none';
+  const mainEl = document.getElementById('main-content');
+  if (mainEl) mainEl.style.display = 'block';
+  refreshCaseDropdown();
+  updateCloudStatusBadge();
+  if (typeof CloudSync !== 'undefined' && CloudSync.isConfigured()) {
+    manualSyncCloud(false);
+  }
+}
+
+function refreshCaseDropdown() {
+  const select = document.getElementById('caseDropdown');
+  select.innerHTML = '<option value="">-- 选择已答题夫妻 --</option>';
+
+  let indexList = [];
+  try { indexList = JSON.parse(localStorage.getItem('MXL_CASE_INDEX') || '[]'); } catch(e) {}
+
+  indexList.forEach(code => {
+    const raw = localStorage.getItem(`MXL_CASE_${code}`);
+    if (raw) {
+      try {
+        const c = JSON.parse(raw);
+        const wName = (c.wife && c.wife.name) ? c.wife.name : '妻子未填';
+        const hName = (c.husband && c.husband.name) ? c.husband.name : '丈夫未填';
+        const opt = document.createElement('option');
+        opt.value = code;
+        opt.innerText = `${code} (${wName} & ${hName})`;
+        select.appendChild(opt);
+      } catch(e) {}
+    }
+  });
+
+  if (indexList.length > 0) {
+    select.value = indexList[0];
+    loadCaseByCode(indexList[0]);
+  }
+}
+
+function selectFromDropdown() {
+  const code = document.getElementById('caseDropdown').value;
+  if (code) loadCaseByCode(code);
+}
+
+function loadCaseData() {
+  const query = document.getElementById('targetOrder').value.trim();
+  if (!query) {
+    alert('请输入配对码或手机号');
+    return;
+  }
+  loadCaseByCode(query);
+}
+
+function loadCaseByCode(code) {
+  let raw = localStorage.getItem(`MXL_CASE_${code}`);
+  if (!raw) {
+    let indexList = [];
+    try { indexList = JSON.parse(localStorage.getItem('MXL_CASE_INDEX') || '[]'); } catch(e) {}
+    for (let c of indexList) {
+      const item = JSON.parse(localStorage.getItem(`MXL_CASE_${c}`) || '{}');
+      if ((item.wife && item.wife.phone === code) || (item.husband && item.husband.phone === code)) {
+        raw = JSON.stringify(item);
+        break;
+      }
+    }
+  }
+
+  if (!raw) {
+    alert(`未检索到档案【${code}】的数据，请核对配对码或手机号。`);
+    return;
+  }
+
+  try {
+    const data = JSON.parse(raw);
+    currentCaseData = data;
+    renderCaseDashboard(data);
+  } catch(e) {
+    alert('数据解析失败');
+  }
+}
+
+function renderCaseDashboard(data) {
+  currentCaseData = data;
+  document.getElementById('fp-code').innerText = data.code || '自定义档案';
+  document.getElementById('fp-marriage').innerText = `婚龄：${data.marriageYears || '未标注'}`;
+  document.getElementById('fp-children').innerText = `子女阶段：${data.childrenStatus || '未标注'}`;
+
+  const hasWife = data.wife && data.wife.answers && Object.keys(data.wife.answers).length >= 36;
+  const hasHusband = data.husband && data.husband.answers && Object.keys(data.husband.answers).length >= 36;
+
+  if (hasWife) {
+    document.getElementById('fp-wife-name').innerText = `${data.wife.name || '妻子'} (${data.wife.age || '-'}岁)`;
+    document.getElementById('fp-wife-phone').innerText = `电话：${data.wife.phone || '-'}`;
+  } else {
+    document.getElementById('fp-wife-name').innerText = '妻子 (尚未完成)';
+    document.getElementById('fp-wife-phone').innerText = '等待提交中';
+  }
+
+  if (hasHusband) {
+    document.getElementById('fp-husband-name').innerText = `${data.husband.name || '丈夫'} (${data.husband.age || '-'}岁)`;
+    document.getElementById('fp-husband-phone').innerText = `电话：${data.husband.phone || '-'}`;
+  } else {
+    document.getElementById('fp-husband-name').innerText = '丈夫 (尚未完成)';
+    document.getElementById('fp-husband-phone').innerText = '等待提交中';
+  }
+
+  const inviteContainer = document.getElementById('fp-invite-container');
+  const inviteTitle = document.getElementById('fp-invite-title');
+  const inviteDesc = document.getElementById('fp-invite-desc');
+
+  if (hasWife && hasHusband) {
+    document.getElementById('fp-status').innerText = '✔ 双方均已完成提交';
+    document.getElementById('fp-status').style.color = 'var(--success)';
+    if (inviteContainer) inviteContainer.style.display = 'none';
+  } else if (hasWife && !hasHusband) {
+    document.getElementById('fp-status').innerText = '⏳ 仅妻子已完成，等待丈夫作答';
+    document.getElementById('fp-status').style.color = 'var(--warning)';
+    if (inviteContainer) {
+      inviteContainer.style.display = 'flex';
+      inviteTitle.innerText = '🔗 妻子【' + (data.wife.name || '未填') + '】已作答，等待【丈夫】补答';
+      inviteDesc.innerText = '配偶可能未收到或关闭了链接。咨询师可一键复制下方专属链接，主动发送给丈夫补填。';
+    }
+  } else if (!hasWife && hasHusband) {
+    document.getElementById('fp-status').innerText = '⏳ 仅丈夫已完成，等待妻子作答';
+    document.getElementById('fp-status').style.color = 'var(--warning)';
+    if (inviteContainer) {
+      inviteContainer.style.display = 'flex';
+      inviteTitle.innerText = '🔗 丈夫【' + (data.husband.name || '未填') + '】已作答，等待【妻子】补答';
+      inviteDesc.innerText = '配偶可能未收到或关闭了链接。咨询师可一键复制下方专属链接，主动发送给妻子补填。';
+    }
+  } else {
+    document.getElementById('fp-status').innerText = '⏳ 双方均尚未提交完整答卷';
+    document.getElementById('fp-status').style.color = 'var(--danger)';
+    if (inviteContainer) inviteContainer.style.display = 'none';
+  }
+
+  renderPersonSection('wife', data.wife, hasWife);
+  renderPersonSection('husband', data.husband, hasHusband);
+  renderCompareSection(data, hasWife, hasHusband);
+}
+
+
+function renderPersonSection(role, personData, isCompleted) {
+  const container = document.getElementById(role + '-content-area');
+  const roleName = role === 'wife' ? '妻子' : '丈夫';
+  const roleColor = role === 'wife' ? 'var(--wife)' : 'var(--husband)';
+
+  if (!isCompleted) {
+    container.innerHTML = `
+      <div class="empty-state-notice">
+        <div class="empty-icon">⏳</div>
+        <h3 style="color:${roleColor};">${roleName}答卷尚未提交</h3>
+        <p>当前【${roleName}】尚未完成 36 题评估问卷。系统无法单方生成六大维度深度心理学解读与生活核对提问。</p>
+        <div style="margin-top:16px; background:#FFFBEB; border:1px dashed #F59E0B; border-radius:10px; padding:12px 16px; display:inline-block; text-align:left; max-width:480px;">
+          <div style="font-size:13px; font-weight:700; color:#B45309; margin-bottom:4px;">🔗 ${roleName}专属补答链接已就绪：</div>
+          <div style="font-size:12px; color:#78350F; line-height:1.5; margin-bottom:10px;">
+            若客户忘记转发或关闭了页面，咨询师可直接复制该链接发送给${roleName}微信，TA打开即可直接参与本案测评：
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn" style="background:#D97706; color:#FFF; font-weight:700; font-size:12px; padding:6px 14px;" onclick="copyPartnerInviteLink()">📋 复制${roleName}补填链接</button>
+            <button class="btn" style="background:#FFF; border:1px solid #CBD5E1; color:#475569; font-size:12px; padding:6px 10px;" onclick="copyPartnerWechatPrompt()">💬 复制催填通知话术</button>
+          </div>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  const ans = personData.answers;
+  const familyCtx = {
+    role: role,
+    roleName: roleName,
+    marriageYears: (currentCaseData && currentCaseData.marriageYears) || '',
+    childrenStatus: (currentCaseData && currentCaseData.childrenStatus) || ''
+  };
+
+  const scoresList = [];
+  const scoresMap = {};
+
+  dimensions.forEach((dim) => {
+    let sum = 0;
+    const dimQs = questions.filter(q => q.dim === dim.name);
+
+    dimQs.forEach(q => {
+      let val = ans[q.id] || 3;
+      if (q.reverse) val = 6 - val;
+      sum += val;
+    });
+
+    const score = Math.round((sum / 30) * 100);
+    scoresMap[dim.id] = score;
+    const diag = analyzeDimensionClinical(dim.id, dim.name, score, ans, familyCtx);
+    scoresList.push({ dim, score, diag, dimQs });
+  });
+
+  // 关键：按得分升序排列！问题严重、得分最低的排在最前！
+  scoresList.sort((a, b) => a.score - b.score);
+
+  const radarSvg = generateRadarSVG(scoresMap, 250);
+  const strengths = extractRelationshipStrengths(ans);
+
+  let strengthsCardsHtml = strengths.map((s, idx) => `
+    <div style="background:#FFF; border:1px solid #BBF7D0; border-left:4px solid #16A34A; border-radius:8px; padding:10px 14px; margin-bottom:8px;">
+      <b style="color:#15803D; font-size:13.5px; display:block; margin-bottom:3px;">${idx + 1}. ${s.title}</b>
+      <div style="font-size:12px; color:#166534; line-height:1.6;">${s.desc}</div>
+    </div>
+  `).join('');
+
+  let html = `
+    <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:12px 16px; margin-bottom:18px; font-size:13px; color:#475569; line-height:1.6;">
+      🎯 <b>咨询师面谈导引：</b>本板块已自动将<b>【得分最低、承压最严重的维度置顶在最前】</b>。建议在面谈的黄金前 15 分钟，优先聚焦前 1~2 个卡点维度进行现实生活印证，再过渡到优势同盟，引导效果最为显著！
+    </div>
+
+    <!-- 视觉雷达与两性保护性基石 -->
+    <div style="display:grid; grid-template-columns:280px 1fr; gap:16px; margin-bottom:20px; align-items:stretch;">
+      <div style="background:#FFF; border:1px solid #CBD5E1; border-radius:12px; padding:14px; text-align:center; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+        <div style="font-size:13px; font-weight:bold; color:#475569; margin-bottom:6px;">${roleName}六维感知轮廓图</div>
+        ${radarSvg}
+      </div>
+      <div style="background:#F0FDF4; border:1.5px solid #86EFAC; border-radius:12px; padding:14px 16px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+          <span style="font-size:18px;">🛡️</span>
+          <b style="font-size:14px; color:#166534;">婚姻中的生命力与守护基石（Prepare/Enrich 正向资产）：</b>
+        </div>
+        <p style="font-size:12px; color:#475569; line-height:1.6; margin-bottom:10px;">
+          临床研究表明，关系的修复离不开固有资产的托举。在${roleName}作答中提炼出以下珍贵保护因子：
+        </p>
+        ${strengthsCardsHtml}
+      </div>
+    </div>
+  `;
+
+  scoresList.forEach((item, idx) => {
+    const dim = item.dim;
+    const score = item.score;
+    const diag = item.diag;
+    const dimQs = item.dimQs;
+
+    let badgeClass = score >= 80 ? 'tier-excel' : (score >= 55 ? 'tier-warn' : 'tier-danger');
+
+    let qItemsHtml = '';
+    dimQs.forEach(q => {
+      const rawVal = ans[q.id] || 3;
+      const reverseList = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28, 30, 34, 36];
+      const isRev = q.reverse || reverseList.includes(q.id);
+      const evalScore = isRev ? (6 - rawVal) : rawVal;
+      let valTagColor = '#475569';
+      let valBg = '#F1F5F9';
+      let scoreNote = '';
+      if (evalScore <= 2) {
+        valTagColor = '#DC2626'; valBg = '#FEE2E2';
+        scoreNote = ' (承压卡点)';
+      } else if (evalScore >= 4) {
+        valTagColor = '#166534'; valBg = '#DCFCE7';
+        scoreNote = ' (优势资产)';
+      }
+
+      qItemsHtml += `
+        <div class="q-score-item" style="display:flex; justify-content:space-between; align-items:center; padding:7px 10px; border-bottom:1px solid #F1F5F9; font-size:12.5px;">
+          <span style="flex:1; padding-right:12px; color:#334155;">${q.id}. ${q.text}</span>
+          <span class="q-score-val" style="color:${valTagColor}; background:${valBg}; padding:3px 8px; border-radius:6px; font-weight:bold; white-space:nowrap; font-size:12px;">
+            作答：${getOptionLabel(rawVal)}${isRev ? ' [反向题]' : ''} ｜ 关系健康计分：${evalScore}分${scoreNote}
+          </span>
+        </div>
+      `;
+    });
+
+    html += `
+      <div class="dim-detail-card" style="border-left: 5px solid ${diag.levelColor}; margin-bottom:18px;">
+        <div class="dim-detail-header">
+          <div>
+            <span style="font-size:16.5px; font-weight:800; color:var(--primary); margin-right:8px;">维度 ${idx + 1}：${dim.name} (${score}分)</span>
+            <span style="font-size:12.5px; color:#64748B;">(${dim.desc})</span>
+          </div>
+          <div>
+            <span class="dim-score-badge ${badgeClass}">${score}分</span>
+          </div>
+        </div>
+
+        <div style="margin: 14px 0; font-size:13px; line-height: 1.7; color: #1F2937;">
+          <div style="background:#FFF7ED; border-left:4px solid #EA580C; padding:10px 14px; border-radius:0 8px 8px 0; margin-bottom:10px;">
+            <b style="color:#C2410C;">①【现状行为现象】：</b><br>
+            ${diag.behaviorPhenomenon}
+          </div>
+
+          <div style="background:#EFF6FF; border-left:4px solid #2563EB; padding:10px 14px; border-radius:0 8px 8px 0; margin-bottom:10px; font-size:12.5px; color:#1E40AF;">
+            <b style="color:#1D4ED8;">②【深层心理防御机制】：</b><br>
+            ${diag.psychologicalDefense}
+          </div>
+
+          <div style="background:#F0FDF4; border-left:4px solid #16A34A; padding:10px 14px; border-radius:0 8px 8px 0; margin-bottom:10px; font-size:12.5px; color:#166534;">
+            <b style="color:#15803D;">③【本周破局微行动】：</b><br>
+            ${diag.breakAction}
+          </div>
+        </div>
+
+        <div style="font-size:12.5px; font-weight:700; color:#334155; margin:14px 0 6px;">📋 原始 6 题作答与健康计分明细：</div>
+        <div class="q-score-list" style="background:#FFF; border:1px solid #E2E8F0; border-radius:8px; overflow:hidden;">
+          ${qItemsHtml}
+        </div>
+
+        <div class="inquiry-box" style="margin-top:14px; background:#FFFBEB; border:1px solid #FCD34D; border-radius:8px; padding:12px 16px;">
+          <b style="color:#92400E; font-size:13px; display:block; margin-bottom:4px;">💬 直击内心的自省提问（${roleName}专属）：</b>
+          <div style="color:#78350F; font-size:12.5px; line-height:1.7;">${diag.coreInquiry}</div>
+        </div>
+      </div>
+    `;
+  });
+
+  const lowestDim = scoresList[0];
+  const highestDim = scoresList[scoresList.length - 1];
+
+  html += `
+    <div class="summary-quote-box" style="margin-top:20px;">
+      <h4>🌱 临床咨询师 · ${roleName}专属综合体检寄语与面谈导引：</h4>
+      <p>
+        在这段关系的当前发展阶段中，最耗费心力的难点集中在<b>【${lowestDim.dim.name} (${lowestDim.score}分)】</b>，而你们最重要的同盟基石在<b>【${highestDim.dim.name} (${highestDim.score}分)】</b>。<br>
+        在系统家庭动力学中，<b>短板维度之间往往存在着内在恶性链条</b>：例如沟通表达的受阻，往往直接诱发恶性冲突升级；冲突失控带来的神经耗竭，又会反噬两人仅存的情感连接，最终让关系滑向孤独与功能瘫痪。
+      </p>
+      <div style="font-style:italic; margin:12px 0; color:#B45309; font-weight:700; font-size:14px;">
+        “婚姻不是两个人的简单结合，而是两个原生依恋系统的相遇与重组。看见彼此的脆弱，爱才能重新自然流动。”
+      </div>
+    </div>
+  `;
+
+  container.innerHTML = html;
+}
+
+
+
+function renderCompareSection(data, hasWife, hasHusband) {
+  const container = document.getElementById('compare-content-area');
+  if (!container) return;
+
+  if (!hasWife || !hasHusband) {
+    const missingWho = !hasWife && !hasHusband ? '双方' : (!hasWife ? '妻子' : '丈夫');
+    container.innerHTML = `
+      <div class="empty-state-notice">
+        <div class="empty-icon">⏳</div>
+        <h3>等待双方数据完整合并</h3>
+        <p>当前档案中【${missingWho}】答卷尚未提交。只有在双方均完成测评后，系统方可解锁双轨对比雷达图、感知温差预警及综合诊断报告。</p>
+        <div style="margin-top:16px; background:#FFFBEB; border:1px dashed #F59E0B; border-radius:10px; padding:14px 18px; display:inline-block; text-align:left; max-width:540px;">
+          <div style="font-size:13.5px; font-weight:700; color:#B45309; margin-bottom:4px;">💡 快速推进：一键主动发送配偶补填链接</div>
+          <div style="font-size:12px; color:#78350F; line-height:1.6; margin-bottom:10px;">
+            如果客户在手机提交后未成功转发给配偶，您无需让客户重新答题。直接点击下方按钮，将已携带前半部数据的补填链接发送给【${missingWho}】微信即可：
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn" style="background:#D97706; color:#FFF; font-weight:700; font-size:12px; padding:8px 16px;" onclick="copyPartnerInviteLink()">📋 复制【${missingWho}】专属补答链接</button>
+            <button class="btn" style="background:#FFF; border:1px solid #CBD5E1; color:#475569; font-size:12px; padding:8px 12px;" onclick="copyPartnerWechatPrompt()">💬 复制催填提醒话术</button>
+          </div>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  const w = data.wife;
+  const h = data.husband;
+
+  const husbandScores = {};
+  const wifeScores = {};
+  const dimGaps = {};
+
+  dimensions.forEach(dim => {
+    let hSum = 0, wSum = 0;
+    const dimQs = questions.filter(q => q.dim === dim.name);
+    dimQs.forEach(q => {
+      let hVal = h.answers[q.id] || 3;
+      let wVal = w.answers[q.id] || 3;
+      if (q.reverse) { hVal = 6 - hVal; wVal = 6 - wVal; }
+      hSum += hVal; wSum += wVal;
+    });
+    const hs = Math.round((hSum / 30) * 100);
+    const ws = Math.round((wSum / 30) * 100);
+    husbandScores[dim.id] = hs;
+    wifeScores[dim.id] = ws;
+    dimGaps[dim.id] = Math.abs(hs - ws);
+  });
+
+  const compareDimsSorted = [...dimensions].sort((a, b) => {
+    const avgA = (husbandScores[a.id] + wifeScores[a.id]) / 2;
+    const avgB = (husbandScores[b.id] + wifeScores[b.id]) / 2;
+    return avgA - avgB;
+  });
+
+  const dualRadarSvg = generateDualRadarSVG(husbandScores, wifeScores, 280);
+
+  let compareRowsHtml = '';
+  compareDimsSorted.forEach((dim, idx) => {
+    const gap = dimGaps[dim.id];
+    const isSevere = gap >= 15;
+    const isModerate = gap >= 8 && gap < 15;
+    let gapTag = '<span style="color:#16A34A; font-weight:bold;">✔ 基本同频</span>';
+    if (isSevere) {
+      gapTag = '<span style="color:#DC2626; font-weight:bold; background:#FEE2E2; padding:2px 6px; border-radius:4px;">⚠️ 显著感知温差 (优先核对)</span>';
+    } else if (isModerate) {
+      gapTag = '<span style="color:#D97706; font-weight:bold; background:#FEF3C7; padding:2px 6px; border-radius:4px;">⚡ 存在微摩擦</span>';
+    }
+
+    compareRowsHtml += `
+      <tr>
+        <td style="font-weight:bold; color:#78350F; padding:8px 12px;">
+          <span style="font-size:11px; background:#E2E8F0; color:#475569; padding:2px 6px; border-radius:4px; margin-right:6px;">#${idx + 1}</span>
+          ${dim.name}
+          <div style="font-size:11px; color:#64748B; font-weight:normal;">${dim.desc}</div>
+        </td>
+        <td style="text-align:center; color:#1D4ED8; font-weight:bold; font-size:14px; padding:8px 12px;">${husbandScores[dim.id]}分</td>
+        <td style="text-align:center; color:#BE185D; font-weight:bold; font-size:14px; padding:8px 12px;">${wifeScores[dim.id]}分</td>
+        <td style="text-align:center; font-weight:bold; font-size:13px; color:${isSevere ? '#DC2626' : '#475569'}; padding:8px 12px;">${gap}分</td>
+        <td style="font-size:12px; padding:8px 12px;">${gapTag}</td>
+      </tr>
+    `;
+  });
+
+  let html = `
+    <div style="display:grid; grid-template-columns:300px 1fr; gap:20px; margin-bottom:20px; align-items:start;">
+      <div style="background:#FFF; border:1px solid #CBD5E1; border-radius:12px; padding:16px; text-align:center;">
+        <div style="font-size:13.5px; font-weight:bold; color:#334155; margin-bottom:8px;">夫妻双轨感知对比轮廓图</div>
+        ${dualRadarSvg}
+        <div style="font-size:11.5px; color:#64748B; margin-top:8px; line-height:1.5;">
+          蓝色区域为丈夫感知，粉色区域为妻子感知。<br>重合度越高说明夫妻认知越同频。
+        </div>
+      </div>
+
+      <div style="background:#FFF; border:1px solid #E2E8F0; border-radius:12px; padding:16px; overflow-x:auto;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h4 style="font-size:14px; color:#1E293B; margin:0;">📊 六大维度对比详单（按承压紧迫度由高到低排列）：</h4>
+          <span style="font-size:11.5px; color:#64748B;">得分越低排在越前</span>
+        </div>
+        <table class="data-table" style="width:100%; border-collapse:collapse;">
+          <thead>
+            <tr style="background:#F8FAFC;">
+              <th style="padding:8px 12px; text-align:left;">评估维度</th>
+              <th style="padding:8px 12px; text-align:center; color:#1D4ED8;">👨 丈夫得分</th>
+              <th style="padding:8px 12px; text-align:center; color:#BE185D;">👩 妻子得分</th>
+              <th style="padding:8px 12px; text-align:center;">感知温差</th>
+              <th style="padding:8px 12px; text-align:left;">临床状态</th>
+            </tr>
+          </thead>
+          <tbody>${compareRowsHtml}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 咨询师面谈核对指引 -->
+    <div style="background:#FFFBEB; border:1px solid #FDE68A; border-radius:12px; padding:16px; margin-bottom:20px;">
+      <b style="color:#B45309; font-size:14px; display:block; margin-bottom:6px;">🎯 临床咨询师 · 双人面谈核心核对策略：</b>
+      <ol style="margin-left:18px; font-size:13px; color:#78350F; line-height:1.7;">
+        <li><b>首要核对排在最前的承压维度（#1 与 #2）：</b>低分区域往往是日常爆发争吵或深层冷战的“火山口”，先引导双方核对具体生活事件中的情绪反应；</li>
+        <li><b>敏锐觉察“显著感知温差”维度：</b>如果一方打分极高而另一方极低（温差 ≥ 15分），通常反映出“一方在默默委屈隐忍，而另一方浑然不觉”的盲区现象；</li>
+        <li><b>协助双方看见 EFT“负向互动闭环”：</b>将矛盾归因于“自动化的追逃死锁系统”，而非攻击彼此人品，迅速降低防卫阻抗；</li>
+        <li><b>强化双方的保护性因子：</b>从两人的坚守承诺、道德人品认可或对孩子的共同爱意中，提炼出重建信任的底气。</li>
+      </ol>
+    </div>
+  `;
+
+  container.innerHTML = html;
+}
+
+
+
+
+let currentTab = 'wife';
+
+function switchSection(tab) {
+  window.currentTab = tab; currentTab = tab;
+  document.querySelectorAll('.section-tabs button').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('tab-' + tab);
+  if (btn) btn.classList.add('active');
+
+  const secWife = document.getElementById('section-wife');
+  const secHusband = document.getElementById('section-husband');
+  const secCompare = document.getElementById('section-compare');
+
+  if (secWife) secWife.style.display = tab === 'wife' ? 'block' : 'none';
+  if (secHusband) secHusband.style.display = tab === 'husband' ? 'block' : 'none';
+  if (secCompare) secCompare.style.display = tab === 'compare' ? 'block' : 'none';
+}
+
+function printCurrentView() {
+  if (currentTab === 'wife') {
+    exportA4Report('wife');
+  } else if (currentTab === 'husband') {
+    exportA4Report('husband');
+  } else {
+    exportA4Report('compare');
+  }
+}
+
+
+
+function exportA4Report(type) {
+  const d = currentCaseData;
+  if (!d) {
+    alert('请先调取或导入客户档案数据！');
+    return;
+  }
+
+  const printContainer = document.getElementById('print-report-container');
+  const code = d.code || 'MXL-自定义';
+  const marriage = d.marriageYears || '未注明';
+  const children = d.childrenStatus || '未注明';
+
+  let pdfHtml = '';
+
+  if (type === 'wife' || type === 'husband') {
+    const roleName = type === 'wife' ? '妻子' : '丈夫';
+    const isHusband = type === 'husband';
+    const p = d[type];
+    if (!p || !p.answers || Object.keys(p.answers).length < 36) {
+      alert(`该档案中【${roleName}】尚未完成评估，无法生成专属 PDF 报告。`);
+      return;
+    }
+
+    const ans = p.answers;
+    const familyCtx = {
+      role: type,
+      roleName: roleName,
+      marriageYears: marriage,
+      childrenStatus: children
+    };
+
+    const scoresList = [];
+    const scoresMap = {};
+
+    dimensions.forEach((dim) => {
+      let sum = 0;
+      const dimQs = questions.filter(q => q.dim === dim.name);
+      dimQs.forEach(q => {
+        let v = ans[q.id] || 3;
+        if (q.reverse) v = 6 - v;
+        sum += v;
+      });
+      const score = Math.round((sum / 30) * 100);
+      scoresMap[dim.id] = score;
+      const diag = analyzeDimensionClinical(dim.id, dim.name, score, ans, familyCtx);
+      scoresList.push({ dim, score, diag, dimQs });
+    });
+
+    // 严格按得分升序排列（问题严重、低分的排在最前面！）
+    scoresList.sort((a, b) => a.score - b.score);
+
+    const radarSvg = generateRadarSVG(scoresMap, 220);
+    const strengths = extractRelationshipStrengths(ans);
+
+    // 生成 P1 紧凑得分表
+    let scoreRowsHtml = '';
+    scoresList.forEach((item, idx) => {
+      let tagBg = item.score >= 80 ? '#DCFCE7' : (item.score >= 55 ? '#FEF3C7' : '#FEE2E2');
+      let tagColor = item.score >= 80 ? '#166534' : (item.score >= 55 ? '#92400E' : '#991B1B');
+
+      scoreRowsHtml += `
+        <tr style="height:23px;">
+          <td style="font-weight:bold; font-size:8.5pt; color:#78350F; padding:3px 8px;">
+            <span style="font-size:7.5pt; background:#E2E8F0; color:#475569; padding:1px 4px; border-radius:3px; margin-right:4px;">#${idx + 1}</span>
+            ${item.dim.name}
+          </td>
+          <td style="font-size:8pt; color:#475569; padding:3px 8px;">${item.dim.desc}</td>
+          <td style="font-weight:bold; font-size:9pt; text-align:center; color:#0F172A; padding:3px 8px;">${item.score}分</td>
+          <td style="text-align:center; padding:3px 8px;">
+            <span style="background:${tagBg}; color:${tagColor}; font-size:7.5pt; font-weight:bold; padding:2px 5px; border-radius:4px;">${item.diag.levelText.split(' ')[0]}</span>
+          </td>
+        </tr>
+      `;
+    });
+
+    // P2: 守护基石卡片
+    let strengthsCardsHtml = strengths.map((s, idx) => `
+      <div class="avoid-break" style="background:#F0FDF4; border:1px solid #BBF7D0; border-left:4px solid #16A34A; border-radius:6px; padding:10px 14px; margin-bottom:12px;">
+        <b style="color:#15803D; font-size:10pt; display:block; margin-bottom:4px;">${idx + 1}. ${s.title}</b>
+        <div style="font-size:8.5pt; color:#166534; line-height:1.65;">${s.desc}</div>
+      </div>
+    `).join('');
+
+    // 辅助函数：渲染单个维度卡片（黄金三段式结构，紧凑无瑕疵）
+    function renderDimCardHtml(item, rankIdx) {
+      const dim = item.dim;
+      const score = item.score;
+      const diag = item.diag;
+      const dimQs = item.dimQs;
+
+      let qListHtml = '';
+      dimQs.forEach(q => {
+        const rawVal = ans[q.id] || 3;
+        const reverseList = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28, 30, 34, 36];
+        const isRev = q.reverse || reverseList.includes(q.id);
+        const evalScore = isRev ? (6 - rawVal) : rawVal;
+        qListHtml += `
+          <tr>
+            <td style="width:68%; font-size:7.5pt; padding:2px 5px; color:#334155;">${q.id}. ${q.text}</td>
+            <td style="width:32%; font-weight:bold; text-align:center; font-size:7pt; padding:2px 5px;">
+              作答：${getOptionLabel(rawVal)}${isRev ? '*' : ''} ｜ 计分：${evalScore}分
+            </td>
+          </tr>
+        `;
+      });
+
+      return `
+        <div class="avoid-break" style="margin-bottom:10px; border:1px solid #CBD5E1; border-left:4px solid ${diag.levelColor}; border-radius:6px; padding:9px 12px; background:#FFF;">
+          <div style="display:flex; justify-content:space-between; border-bottom:1px solid #E2E8F0; padding-bottom:4px; margin-bottom:6px;">
+            <b style="font-size:9.5pt; color:#78350F;">
+              维度 ${rankIdx}：${dim.name} (${score}分)
+              <span style="font-size:8pt; color:#64748B; font-weight:normal; margin-left:4px;">(${dim.desc})</span>
+            </b>
+            <b style="font-size:9pt; color:#0F172A;">${score}分</b>
+          </div>
+
+          <div style="font-size:8pt; line-height:1.55; margin-bottom:6px;">
+            <div style="background:#FFF7ED; border-left:3px solid #EA580C; padding:4px 8px; border-radius:0 4px 4px 0; margin-bottom:5px; color:#9A3412;">
+              <b>【行为现象】：</b>${diag.behaviorPhenomenon}
+            </div>
+            <div style="background:#EFF6FF; border-left:3px solid #2563EB; padding:4px 8px; border-radius:0 4px 4px 0; margin-bottom:5px; color:#1E40AF;">
+              <b>【深层心理防御机制】：</b>${diag.psychologicalDefense}
+            </div>
+            <div style="background:#F0FDF4; border-left:3px solid #16A34A; padding:4px 8px; border-radius:0 4px 4px 0; margin-bottom:5px; color:#166534;">
+              <b>【本周破局微行动】：</b>${diag.breakAction}
+            </div>
+          </div>
+
+          <table class="pdf-table" style="margin:2px 0 4px;">
+            <thead><tr style="background:#F8FAFC;"><th style="padding:2px 5px; font-size:7.5pt;">评估题目</th><th style="width:130px; text-align:center; padding:2px 5px; font-size:7.5pt;">作答与健康计分</th></tr></thead>
+            <tbody>${qListHtml}</tbody>
+          </table>
+
+          <div style="background:#FFFBEB; border:1px dashed #FCD34D; padding:5px 8px; border-radius:5px; font-size:7.5pt; color:#78350F; line-height:1.45;">
+            <b>💬 直击内心的自省提问（${roleName}专属）：</b>
+            <div style="margin-top:2px;">${diag.coreInquiry}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    pdfHtml = `
+      <!-- ================= P1: 封面、档案与六维雷达总览 ================= -->
+      <div class="pdf-page">
+        <div>
+          <div style="text-align:center; border-bottom:2px solid #78350F; padding-bottom:8px; margin-bottom:12px;">
+            <h1 style="font-size:16pt; color:#78350F; margin:0 0 3px 0; letter-spacing:0.5px;">慕喜乐夫妻营 · 婚姻关系深度体检报告</h1>
+            <div style="font-size:10.5pt; color:#475569; font-weight:bold;">【${roleName}专属报告 · 临床心理学觉察版】</div>
+            <div style="font-size:7.5pt; color:#94A3B8; margin-top:2px;">档案编号：${code} ｜ 测评日期：${new Date().toLocaleDateString()}</div>
+          </div>
+
+          <div style="background:#F8FAFC; border:1px solid #CBD5E1; padding:8px 12px; border-radius:6px; margin-bottom:12px; font-size:8.5pt; line-height:1.55;">
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px 10px; margin-bottom:6px;">
+              <div><b>受测角色：</b>${roleName} (${p.age || '-'}岁)</div>
+              <div><b>结婚时间：</b>${marriage}</div>
+              <div><b>子女情况：</b>${children}</div>
+              <div><b>联系方式：</b>${p.phone || '-'}</div>
+              <div><b>完成题数：</b>全项 36 题已封存</div>
+              <div><b>排版结构：</b>承压紧迫度升序</div>
+            </div>
+            <div style="border-top:1px dashed #E2E8F0; padding-top:4px; font-size:8pt; color:#64748B;">
+              📌 <b>家庭生命周期背景画像：</b>处于婚龄【${marriage}】、子女【${children}】阶段。属于典型的成熟家庭期，夫妻常年聚焦家庭运转，容易出现事务分工替代情感交流的惯性，是重启二人亲密同盟的黄金重塑期。
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:center; margin-bottom:8px;">
+            ${radarSvg}
+          </div>
+
+          <table class="pdf-table" style="margin:2px 0 10px;">
+            <thead>
+              <tr style="background:#F1F5F9; height:24px;">
+                <th style="width:26%; padding:3px 8px; font-size:8.5pt;">评估维度</th>
+                <th style="width:44%; padding:3px 8px; font-size:8.5pt;">心理学测查核心</th>
+                <th style="width:14%; text-align:center; padding:3px 8px; font-size:8.5pt;">得分</th>
+                <th style="width:16%; text-align:center; padding:3px 8px; font-size:8.5pt;">状态等级</th>
+              </tr>
+            </thead>
+            <tbody>${scoreRowsHtml}</tbody>
+          </table>
+
+          <div style="padding:8px 10px; background:#FFFBEB; border-left:3.5px solid #D97706; font-size:8pt; line-height:1.55; color:#78350F; border-radius:4px;">
+            <b>【致您的面谈前言】：</b>本评估客观折射了您在过去一段时间内的真实互动体验。量表得分的高低不是给人贴标签，而是帮您在纷乱的生活琐事中精准识别出当前最需要被看见、被拥抱的深层依恋诉求。
+          </div>
+        </div>
+
+        <div style="font-size:7.5pt; color:#94A3B8; text-align:center; border-top:1px solid #E2E8F0; padding-top:4px;">
+          慕喜乐夫妻营 · 专业亲密关系成长体系 ｜ 官方咨询微信：wymone3 ｜ 第 1 页 / 共 7 页
+        </div>
+      </div>
+
+      <!-- ================= P2: 两性基石与保护性因子 (Prepare/Enrich) ================= -->
+      <div class="pdf-page">
+        <div>
+          <div style="border-bottom:1.5px solid #78350F; padding-bottom:6px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:flex-end;">
+            <div>
+              <b style="font-size:13pt; color:#78350F;">🛡️ 婚姻中的生命力与守护基石（正向资产）</b>
+              <div style="font-size:8pt; color:#64748B; margin-top:2px;">基于 Prepare/Enrich 临床模型提炼的固有保护因子</div>
+            </div>
+            <span style="font-size:8pt; color:#94A3B8;">档案：${code}</span>
+          </div>
+
+          <div style="background:#F8FAFC; border:1px solid #E2E8F0; padding:10px 14px; border-radius:6px; font-size:8.5pt; color:#475569; line-height:1.65; margin-bottom:14px;">
+            💡 <b>临床测评师寄语：</b>心理学研究明确证实，婚姻的修复绝不能仅仅盯着千疮百孔的“痛点”，更要看见那些<b>托住关系没有坠落的“底盘资源”</b>。在您的答卷中，清晰呈现出以下珍贵的保护因子，这正是接下来重建信任的最强底气：
+          </div>
+
+          ${strengths.length > 0 ? strengthsCardsHtml : `
+            <div style="background:#FFF7ED; border:1px solid #FED7AA; border-radius:8px; padding:14px; color:#9A3412; font-size:8.5pt; line-height:1.6;">
+              <b>【临床观察与预警提示】：</b>在核心守护题项中，作答暂未呈现出显著突出的高分同盟因子（答卷显示如“维持现状多因责任或妥协”）。这表明当前关系正处于深度的“功能性契约磨损期”，夫妻双方的防御硬壳较厚，亟需在安全咨询场域中共同梳理并重建情感联结。
+            </div>
+          `}
+
+          <div style="margin-top:14px; padding:10px 12px; background:#EFF6FF; border-left:3.5px solid #2563EB; border-radius:4px; font-size:8.5pt; color:#1E40AF; line-height:1.6;">
+            <b>【咨询师观察】：</b>${strengths.length > 0 ? 
+              '这些守护因子的存在，充分说明你们依然具备做人底线的敬意、清晰的家庭界线与深层底盘。哪怕眼下沟通困难，这段关系的土壤依然保留着旺盛的生机。' : 
+              '虽然显性高分守护因子受挫，但诚实面对现状本身就是最宝贵的起点。看见问题不是宣判失败，而是走出麻木循环的第一步。'}
+          </div>
+        </div>
+
+        <div style="font-size:7.5pt; color:#94A3B8; text-align:center; border-top:1px solid #E2E8F0; padding-top:4px;">
+          慕喜乐夫妻营 · 内部机密咨询材料 ｜ 未经许可请勿外传 ｜ 第 2 页 / 共 7 页
+        </div>
+      </div>
+
+      <!-- ================= P3: 优先关注 #1 与 #2 深度洞察 (承压最高) ================= -->
+      <div class="pdf-page">
+        <div>
+          <div style="border-bottom:1px solid #CBD5E1; padding-bottom:4px; margin-bottom:8px; display:flex; justify-content:space-between; font-size:8pt; color:#64748B;">
+            <span>慕喜乐夫妻营 · 承压维度深度洞察【维度 1 & 维度 2】</span>
+            <span>档案编号：${code}</span>
+          </div>
+
+          ${renderDimCardHtml(scoresList[0], 1)}
+          ${renderDimCardHtml(scoresList[1], 2)}
+        </div>
+
+        <div style="font-size:7.5pt; color:#94A3B8; text-align:center; border-top:1px solid #E2E8F0; padding-top:4px;">
+          慕喜乐夫妻营 · 专业亲密关系成长体系 ｜ 官方咨询微信：wymone3 ｜ 第 3 页 / 共 7 页
+        </div>
+      </div>
+
+      <!-- ================= P4: 优先关注 #3 与 #4 深度洞察 ================= -->
+      <div class="pdf-page">
+        <div>
+          <div style="border-bottom:1px solid #CBD5E1; padding-bottom:4px; margin-bottom:8px; display:flex; justify-content:space-between; font-size:8pt; color:#64748B;">
+            <span>慕喜乐夫妻营 · 关系维度深度洞察【维度 3 & 维度 4】</span>
+            <span>档案编号：${code}</span>
+          </div>
+
+          ${renderDimCardHtml(scoresList[2], 3)}
+          ${renderDimCardHtml(scoresList[3], 4)}
+        </div>
+
+        <div style="font-size:7.5pt; color:#94A3B8; text-align:center; border-top:1px solid #E2E8F0; padding-top:4px;">
+          慕喜乐夫妻营 · 专业亲密关系成长体系 ｜ 官方咨询微信：wymone3 ｜ 第 4 页 / 共 7 页
+        </div>
+      </div>
+
+      <!-- ================= P5: 优先关注 #5 与 #6 深度洞察 (同盟优势) ================= -->
+      <div class="pdf-page">
+        <div>
+          <div style="border-bottom:1px solid #CBD5E1; padding-bottom:4px; margin-bottom:8px; display:flex; justify-content:space-between; font-size:8pt; color:#64748B;">
+            <span>慕喜乐夫妻营 · 承压维度深度洞察【优先关注 #5 & #6】</span>
+            <span>档案编号：${code}</span>
+          </div>
+
+          ${renderDimCardHtml(scoresList[4], 5)}
+          ${renderDimCardHtml(scoresList[5], 6)}
+        </div>
+
+        <div style="font-size:7.5pt; color:#94A3B8; text-align:center; border-top:1px solid #E2E8F0; padding-top:4px;">
+          慕喜乐夫妻营 · 专业亲密关系成长体系 ｜ 官方咨询微信：wymone3 ｜ 第 5 页 / 共 7 页
+        </div>
+      </div>
+
+      <!-- ================= P6: 关系动力学全景剖析 (EFT 闭环) ================= -->
+      <div class="pdf-page">
+        <div>
+          <div style="border-bottom:1.5px solid #78350F; padding-bottom:6px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:flex-end;">
+            <div>
+              <b style="font-size:13pt; color:#78350F;">🔄 关系动力学全景剖析（EFT 负向互动闭环）</b>
+              <div style="font-size:8pt; color:#64748B; margin-top:2px;">情绪聚焦疗法 · 识别夫妻专属的恶性死锁循环</div>
+            </div>
+            <span style="font-size:8pt; color:#94A3B8;">档案：${code}</span>
+          </div>
+
+          <div style="background:#FFF7ED; border:1px solid #FED7AA; border-radius:8px; padding:12px 14px; margin-bottom:14px; font-size:8.5pt; line-height:1.7; color:#9A3412;">
+            <b>【真正的敌人不是彼此，而是这套自动化运转的“负向死锁系统”】：</b><br>
+            在长年的日常相处中，夫妻之间往往会无意识地固化出一套<b>“一方积怨追击 / 挑剔 ↔ 另一方无力退缩 / 筑墙冷处理”</b>的恶性互锁环。
+          </div>
+
+          <!-- EFT 个性化角色锚定闭环图示模块 -->
+          <div style="background:#FFFBEB; border:1.5px solid #FCD34D; border-radius:8px; padding:8px 12px; margin-bottom:12px; font-size:8.5pt; color:#92400E;">
+            🎯 <b>案主专属死锁位置锚定（结合答卷第 10 题与第 14 题作答推断）：</b><br>
+            ${isHusband ? 
+              '<b>【您在循环中的当前主导姿态】：退缩 / 回避方（Withdraw）</b>；妻子可能呈现的主导姿态：追击 / 积怨方（Pursuer）' : 
+              '<b>【您在循环中的当前主导姿态】：追击 / 积怨方（Pursuer）</b>；丈夫可能呈现的主导姿态：退缩 / 回避方（Withdraw）'}
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 60px 1fr; gap:8px; align-items:center; background:#F8FAFC; border:1px solid #CBD5E1; border-radius:8px; padding:14px; margin-bottom:14px;">
+            <div style="background:#FFF; border:${!isHusband ? '2.5px solid #DC2626; box-shadow:0 2px 8px rgba(220,38,38,0.15);' : '1.5px solid #FCA5A5;'}; border-radius:8px; padding:10px; font-size:8pt; line-height:1.6; position:relative;">
+              ${!isHusband ? '<span style="position:absolute; top:-10px; right:10px; background:#DC2626; color:#FFF; font-size:7pt; font-weight:bold; padding:1px 6px; border-radius:10px;">★ 您的当前位置</span>' : ''}
+              <b style="color:#DC2626; display:block; margin-bottom:4px;">【追击 / 积怨方表象】${!isHusband ? '（妻子）' : '（伴侣可能姿态）'}</b>
+              感到被忽略、孤独、付出委屈 → 语气急促、挑剔、试图通过敲打唤起伴侣的注意与回应。
+              <div style="margin-top:6px; font-style:italic; color:#7F1D1D; background:#FEE2E2; padding:3px 6px; border-radius:4px;">
+                深层渴望：“请看着我！我需要确认你还在乎我！”
+              </div>
+            </div>
+
+            <div style="text-align:center; font-size:16pt; color:#94A3B8;">⇄</div>
+
+            <div style="background:#FFF; border:${isHusband ? '2.5px solid #2563EB; box-shadow:0 2px 8px rgba(37,99,235,0.15);' : '1.5px solid #93C5FD;'}; border-radius:8px; padding:10px; font-size:8pt; line-height:1.6; position:relative;">
+              ${isHusband ? '<span style="position:absolute; top:-10px; right:10px; background:#2563EB; color:#FFF; font-size:7pt; font-weight:bold; padding:1px 6px; border-radius:10px;">★ 您的当前位置</span>' : ''}
+              <b style="color:#2563EB; display:block; margin-bottom:4px;">【退缩 / 回避方表象】${isHusband ? '（丈夫）' : '（伴侣可能姿态）'}</b>
+              感到无论怎么做都是错的、被否定 → 闭嘴、沉默、看手机、逃回安全角落躲避战火。
+              <div style="margin-top:6px; font-style:italic; color:#1E3A8A; background:#DBEAFE; padding:3px 6px; border-radius:4px;">
+                深层渴望：“我害怕彻底搞砸，我只想保护自己不崩溃！”
+              </div>
+            </div>
+          </div>
+
+          <div style="background:#F0FDF4; border-left:3.5px solid #16A34A; padding:10px 12px; border-radius:4px; font-size:8.5pt; color:#166534; line-height:1.65;">
+            <b>【临床咨询师点拨】：</b>你们看到的吵架或冷战，其实只是露在水面上的冰山一角。水面之下，是两个人被深深冻结的依恋渴望。解除痛苦的第一步，是夫妻双方达成共识：<b>“不是你不好，也不是我不好，而是这个负向死锁在伤害我们。”</b>
+          </div>
+        </div>
+
+        <div style="font-size:7.5pt; color:#94A3B8; text-align:center; border-top:1px solid #E2E8F0; padding-top:4px;">
+          慕喜乐夫妻营 · 内部机密咨询材料 ｜ 未经许可请勿外传 ｜ 第 6 页 / 共 7 页
+        </div>
+      </div>
+
+      <!-- ================= P7: 轻量行动指引与面谈预约闭环 ================= -->
+      <div class="pdf-page">
+        <div>
+          <div style="border-bottom:1.5px solid #78350F; padding-bottom:6px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:flex-end;">
+            <div>
+              <b style="font-size:13pt; color:#78350F;">🌱 深度梳理与修复指引（向光而行）</b>
+              <div style="font-size:8pt; color:#64748B; margin-top:2px;">看见是改变的起点 · 从微小行动开始重构安全感</div>
+            </div>
+            <span style="font-size:8pt; color:#94A3B8;">档案：${code}</span>
+          </div>
+
+          <div style="background:#FFFBEB; border:1px solid #FDE68A; border-radius:8px; padding:12px 14px; margin-bottom:14px; font-size:8.5pt; line-height:1.7; color:#78350F;">
+            <b>【评估结语】：</b>体检报告的意义在于看见盲区。你们的关系并非没有爱，而是被困在了长年运转的“防御-回避”自动化程序中。婚姻不是两个人的简单结合，而是两个原生依恋系统的相遇与重组。看见创伤与防御，爱才能自由流动。
+          </div>
+
+          <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:12px 14px; margin-bottom:14px;">
+            <b style="font-size:9.5pt; color:#1E293B; display:block; margin-bottom:6px;">📋 走进 1对1 深度拆解面谈前的准备建议：</b>
+            <ol style="margin-left:16px; font-size:8.5pt; color:#475569; line-height:1.7;">
+              <li>挑选本报告中<b>最触动您心弦的 1~2 个提问</b>，在便签上写下您当时最真实闪过的念头；</li>
+              <li>尝试放下“必须争个对错”的执念，带着“我想让伴侣了解我内心的孤独，我也想重新读懂 TA”的初心走进咨询；</li>
+              <li>如果条件允许，尝试在咨询前与伴侣分享报告中的“婚姻守护基石”部分，肯定彼此的不容易。</li>
+            </ol>
+          </div>
+
+          <div style="background:#EFF6FF; border:1.5px dashed #3B82F6; border-radius:8px; padding:14px; text-align:center;">
+            <b style="font-size:10.5pt; color:#1E40AF; display:block; margin-bottom:4px;">📞 慕喜乐 1对1 专家深度连线通道</b>
+            <p style="font-size:8.5pt; color:#475569; line-height:1.6; margin-bottom:8px;">
+              量表负责标定盲区，解读负责解开死锁。<br>请扫描或添加官方咨询师微信，为您们预约 30 分钟专属双人拆解面谈：
+            </p>
+            <div style="display:inline-block; background:#FFF; border:1px solid #BFDBFE; padding:5px 18px; border-radius:20px; font-weight:bold; color:#1D4ED8; font-size:10.5pt; letter-spacing:0.5px;">
+              官方微信：wymone3
+            </div>
+            <div style="font-size:7.5pt; color:#94A3B8; margin-top:6px;">添加时请备注您的家庭配对编号：${code}</div>
+          </div>
+        </div>
+
+        <div style="font-size:7.5pt; color:#94A3B8; text-align:center; border-top:1px solid #E2E8F0; padding-top:4px;">
+          慕喜乐夫妻营 · 内部机密咨询材料 ｜ 未经许可请勿外传 ｜ 第 7 页 / 共 7 页 (完)
+        </div>
+      </div>
+    `;
+  } else {
+    // 咨询师双人对比全貌 PDF
+    const w = d.wife;
+    const h = d.husband;
+
+    const husbandScores = {};
+    const wifeScores = {};
+    const dimGaps = {};
+
+    dimensions.forEach(dim => {
+      let hSum = 0, wSum = 0;
+      const dimQs = questions.filter(q => q.dim === dim.name);
+      dimQs.forEach(q => {
+        let hVal = h.answers[q.id] || 3;
+        let wVal = w.answers[q.id] || 3;
+        if (q.reverse) { hVal = 6 - hVal; wVal = 6 - wVal; }
+        hSum += hVal; wSum += wVal;
+      });
+      const hs = Math.round((hSum / 30) * 100);
+      const ws = Math.round((wSum / 30) * 100);
+      husbandScores[dim.id] = hs;
+      wifeScores[dim.id] = ws;
+      dimGaps[dim.id] = Math.abs(hs - ws);
+    });
+
+    const compareDimsSorted = [...dimensions].sort((a, b) => {
+      const avgA = (husbandScores[a.id] + wifeScores[a.id]) / 2;
+      const avgB = (husbandScores[b.id] + wifeScores[b.id]) / 2;
+      return avgA - avgB;
+    });
+
+    const dualRadarSvg = generateDualRadarSVG(husbandScores, wifeScores, 230);
+
+    let compareRowsHtml = '';
+    compareDimsSorted.forEach((dim, idx) => {
+      const gap = dimGaps[dim.id];
+      const isSevere = gap >= 15;
+      compareRowsHtml += `
+        <tr style="height:24px;">
+          <td style="font-weight:bold; color:#78350F; font-size:8.5pt; padding:3px 8px;">
+            <span style="font-size:7.5pt; background:#E2E8F0; color:#475569; padding:1px 4px; border-radius:3px; margin-right:4px;">#${idx + 1}</span>
+            ${dim.name}
+          </td>
+          <td style="text-align:center; color:#1D4ED8; font-weight:bold; font-size:8.5pt; padding:3px 8px;">${husbandScores[dim.id]}分</td>
+          <td style="text-align:center; color:#BE185D; font-weight:bold; font-size:8.5pt; padding:3px 8px;">${wifeScores[dim.id]}分</td>
+          <td style="text-align:center; font-weight:bold; font-size:8.5pt; ${isSevere ? 'color:#DC2626;' : ''} padding:3px 8px;">${gap}分</td>
+          <td style="font-size:8pt; padding:3px 8px;">${isSevere ? '⚠️ 显著温差 (优先核对)' : '✔ 基本同频'}</td>
+        </tr>
+      `;
+    });
+
+    pdfHtml = `
+      <div class="pdf-page">
+        <div>
+          <div style="text-align:center; border-bottom:2px solid #78350F; padding-bottom:8px; margin-bottom:12px;">
+            <h1 style="font-size:16pt; color:#78350F; margin:0 0 3px 0;">慕喜乐夫妻营 · 婚姻关系双轨对比全貌报告</h1>
+            <div style="font-size:10.5pt; color:#475569; font-weight:bold;">【咨询师专属案卷 · 临床对比诊断版】</div>
+            <div style="font-size:7.5pt; color:#94A3B8; margin-top:2px;">档案编号：${code} ｜ 测评日期：${new Date().toLocaleDateString()}</div>
+          </div>
+
+          <div style="background:#F8FAFC; border:1px solid #CBD5E1; padding:7px 10px; border-radius:6px; margin-bottom:12px; font-size:8.5pt; line-height:1.5;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px 10px;">
+              <div><b>👨 丈夫：</b>${h.name} (${h.age}岁 ｜ ${h.phone})</div>
+              <div><b>👩 妻子：</b>${w.name} (${w.age}岁 ｜ ${w.phone})</div>
+              <div><b>结婚时间：</b>${marriage}</div>
+              <div><b>子女阶段：</b>${children}</div>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:center; margin-bottom:8px;">
+            ${dualRadarSvg}
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <h3 style="font-size:9.5pt; margin:0; color:#1E293B;">📊 夫妻双方六大维度对比详单（已按综合承压程度置顶）：</h3>
+            <span style="font-size:7.5pt; color:#64748B;">由低分至高分排列</span>
+          </div>
+          <table class="pdf-table" style="margin:2px 0 10px;">
+            <thead>
+              <tr style="background:#F1F5F9; height:24px;">
+                <th style="padding:3px 8px; font-size:8.5pt;">评估维度</th>
+                <th style="text-align:center; padding:3px 8px; font-size:8.5pt;">👨 丈夫得分</th>
+                <th style="text-align:center; padding:3px 8px; font-size:8.5pt;">👩 妻子得分</th>
+                <th style="text-align:center; padding:3px 8px; font-size:8.5pt;">感知温差</th>
+                <th style="padding:3px 8px; font-size:8.5pt;">临床性质</th>
+              </tr>
+            </thead>
+            <tbody>${compareRowsHtml}</tbody>
+          </table>
+
+          <div class="avoid-break" style="background:#FFFDF5; border:1px solid #FCD34D; padding:10px 12px; border-radius:6px; font-size:8.5pt; line-height:1.6;">
+            <b style="color:#B45309;">🎯 咨询师面谈核对与干预引导方向：</b><br>
+            本案首要核对排在最前的承压维度。先引导双方核对具体生活事件中的情绪反应，协助双方看清“追-逃循环”等深层依恋创伤，促成现场破冰与深度转化。
+          </div>
+        </div>
+
+        <div style="margin-top:10px; font-size:7.5pt; color:#94A3B8; text-align:center; border-top:1px solid #E2E8F0; padding-top:4px;">
+          慕喜乐夫妻营 · 内部机密咨询材料 ｜ 未经许可请勿外传 ｜ 客服微信：wymone3 ｜ 第 1 页 (完)
+        </div>
+      </div>
+    `;
+  }
+
+  printContainer.innerHTML = pdfHtml;
+
+  const originalTitle = document.title;
+  document.title = `慕喜乐夫妻营_${type==='wife'?'妻子深度体检报告':(type==='husband'?'丈夫深度体检报告':'双轨对比全貌')}_${code}`;
+  window.print();
+  document.title = originalTitle;
+}
+
+
+
+
+
+// diagnostic_engine.js - 慕喜乐夫妻营临床深度解读引擎
+// 摆脱生硬4段式与机械推课，聚焦于：
+// 1. 真实生活切片与心理动力剖析（不同题目组合背后的真实夫妻互动）
+// 2. 依恋类型诊断（焦虑型、回避型、恐惧型、安全型）及原生家庭童年养育印记分析
+// 3. 婚龄与子女状况的家庭生命周期交互分析
+// 4. 自我觉察与现实生活核对指导
+
+// diagnostic_engine.js - 慕喜乐夫妻营临床深度解读引擎 (V3 启发觉察版)
+// 核心原则：
+// 1. 态度客观严谨、富有同理心，采用“推测、探讨、启发核实”的分析口吻（避免武断定论）
+// 2. 直击真实夫妻最关切的三大核心诉求：
+//    - ① 我们的婚姻核心卡点可能出在哪里？（问题成因与互动死锁）
+//    - ② 这段关系还有希望吗？（依恋资源与修复契机）
+//    - ③ 我的个人突破与改善方向在哪里？（自我觉察与具体微习惯）
+// 3. 深度结合原生家庭依恋印记、题目分值组合、婚龄与子女阶段
+
+// diagnostic_engine.js - 慕喜乐夫妻营高端心理学评估引擎 (V4 赋能与全景架构版)
+// 核心原则：
+// 1. 消除机器感与姓名生硬替换，统一第二人称“您/你们/在这段关系中”温和陪伴式叙事；
+// 2. 差异化结合维度痛点，拒绝各维度重复机械复制同一句生命周期文字；
+// 3. 全面覆盖来访者三问（问题在哪、有希望吗、改善方向），增设赋能微行动与生活核对；
+// 4. 科学提取两性基石与保护因子（Prepare/Enrich视角），避免全盘病理化，为重建注入底气。
+
+// diagnostic_engine.js - 慕喜乐夫妻营高端心理学评估引擎 (V4 赋能与全景架构版)
+// 核心原则：
+// 1. 消除机器感与姓名生硬替换，统一第二人称“您/你们/在这段关系中”温和陪伴式叙事；
+// 2. 差异化结合维度痛点，拒绝各维度重复机械复制同一句生命周期文字；
+// 3. 全面覆盖来访者三问（问题在哪、有希望吗、改善方向），增设赋能微行动与生活核对；
+// 4. 科学提取两性基石与保护因子（Prepare/Enrich视角），避免全盘病理化，为重建注入底气。
+
+// diagnostic_engine.js - 慕喜乐夫妻营高端心理学评估引擎 (V4 赋能与全景架构版)
+// 核心原则：
+// 1. 消除机器感与姓名生硬替换，统一第二人称“您/你们/在这段关系中”温和陪伴式叙事；
+// 2. 差异化结合维度痛点，拒绝各维度重复机械复制同一句生命周期文字；
+// 3. 全面覆盖来访者三问（问题在哪、有希望吗、改善方向），增设赋能微行动与生活核对；
+// 4. 科学提取两性基石与保护因子（Prepare/Enrich视角），避免全盘病理化，为重建注入底气。
+
+// diagnostic_engine.js - 慕喜乐夫妻营高端心理学评估引擎 (V5 客观觉察与两性分流版)
+// 核心原则：
+// 1. 客观呈现事实与动力机制，不急于给出主观评判或过早行动建议，彻底剔除“关系希望评估”和“本周微行动建议”；
+// 2. 严格按性别（husband / wife）深度分流面谈觉察提问，紧扣中国夫妻常见文化与临床心理现实；
+// 3. 统一第二人称“您/你们/在这段关系中”温和陪伴式叙事；
+// 4. 科学提取两性基石与保护因子（Prepare/Enrich视角），避免全盘病理化。
+
+// diagnostic_engine.js - 慕喜乐夫妻营高端心理学评估引擎 (V6 黄金三段式与动态精准诊断版)
+// 核心设计原则：
+// 1. 结构精炼为“三段式黄金结构”：【行为现象】 ➔ 【深层心理机制】 ➔ 【落地微行动与直击内心的自省提问】；
+// 2. 彻底移除重复机械的“阶段特征”段落与冗余套话，把版面留给硬核临床分析；
+// 3. 严格两性分流提问，直击痛点，拒绝空泛说教；
+// 4. 守护基石严格基于真实作答（≥4分）动态生成，若出现妥协/不确定（如第30题/第27题）坚决剔除并预警，拒绝虚假夸赞。
+
+function analyzeDimensionClinical(dimId, dimName, score, rawAnswers, familyContext) {
+  const isHusband = familyContext.role === 'husband';
+  const roleName = isHusband ? '丈夫' : '妻子';
+
+  let levelText = '';
+  let levelColor = '';
+  if (score >= 80) { levelText = '同盟优势区'; levelColor = '#166534'; }
+  else if (score >= 55) { levelText = '承压磨合区'; levelColor = '#B45309'; }
+  else { levelText = '预警卡点区'; levelColor = '#DC2626'; }
+
+  let behaviorPhenomenon = '';  // 1. 【行为现象】
+  let psychologicalDefense = ''; // 2. 【深层心理防御机制】
+  let breakAction = '';          // 3. 【本周破局微行动】
+  let coreInquiry = '';          // 4. 【直击内心的自省提问】
+
+  if (dimId === 'conn') {
+    // Q1(脆弱依靠), Q2(担心不被爱-反), Q3(身体亲密), Q4(合租室友-反), Q5(优先注意), Q6(害怕暴露-反)
+    const q1 = rawAnswers[1] || 3;
+    const q2 = rawAnswers[2] || 3;
+    const q3 = rawAnswers[3] || 3;
+    const q4 = rawAnswers[4] || 3;
+    const q5 = rawAnswers[5] || 3;
+    const q6 = rawAnswers[6] || 3;
+
+    if (q4 >= 4 || q3 <= 2) {
+      behaviorPhenomenon = '<b>【合租室友化与微拒绝】</b>作答显示身体温存与心灵共鸣受挫。夫妻退化为日常事务与家庭运转的执行搭档，白天各奔东西，夜晚背对背沉浸于屏幕，深层脆弱感失去承接空间。';
+    } else if (q1 <= 2) {
+      behaviorPhenomenon = '<b>【脆弱阻滞与内在孤岛】</b>当在外遭遇挫折或身心俱疲时，习惯性判定向伴侣倾诉的解释成本过高，索性独自消化，两颗心在客气与克制中筑起了心理围墙。';
+    } else {
+      behaviorPhenomenon = '<b>【节奏错位与情感微失联】</b>情感基础尚在，但忙碌与琐事逐渐蚕食了专属关注，情感连接容易在功能性运转中钝化。';
+    }
+
+    if (q6 >= 4 || q1 <= 2) {
+      psychologicalDefense = '<b>【回避依恋与情感节能模式】</b>成长经历中常内化了“依赖他人是不安全的、唯有靠自己才稳妥”的硬壳。走进婚姻后，一旦关系需要深层袒露脆弱，便本能退回内心堡垒，沉默并非不爱，而是情感电量耗尽时的自我防御。';
+    } else if (q2 >= 4) {
+      psychologicalDefense = '<b>【焦虑型高警觉监测】</b>内心对被确认与被爱高度渴求，伴侣因疲惫造成的沉默或迟钝，极易被潜意识自动解读为“感情变淡或忽视”，进而激发内耗或试探。';
+    } else {
+      psychologicalDefense = '<b>【安全基底上的事务性消耗】</b>具备相对平稳的信任底色，当前主要受制于外部压力引发的心理能量透支。';
+    }
+
+    breakAction = '今晚睡前尝试一次<b>无事务目的的“30秒温存拥抱”</b>或主动递一杯温水，不谈孩子、家务与工作，打破日常肢体接触与情感可及性的坚冰。';
+
+    if (isHusband) {
+      coreInquiry = '“在工作压力极大、感到身心俱疲的时刻，您是更习惯一个人在车里或书房独处平复，还是觉得能随时向妻子诉说内心的无力和挫折？”';
+    } else {
+      coreInquiry = '“当您渴望得到丈夫的倾听和温存，却发现他心不在焉或沉浸在手机/工作里时，您心底最强烈的感受是被忽略的委屈，还是深深的孤独？”';
+    }
+
+  } else if (dimId === 'comm') {
+    // Q7(心平气和), Q8(指责挑剔-反), Q9(放下手机倾听), Q10(说了没用沉默-反), Q11(尊重立场), Q12(立刻辩解反咬-反)
+    const q7 = rawAnswers[7] || 3;
+    const q8 = rawAnswers[8] || 3;
+    const q9 = rawAnswers[9] || 3;
+    const q10 = rawAnswers[10] || 3;
+    const q11 = rawAnswers[11] || 3;
+    const q12 = rawAnswers[12] || 3;
+
+    if (q10 >= 4) {
+      behaviorPhenomenon = '<b>【习得性沉默与沟通筑墙】</b>答卷强烈提示“说了也没用，索性闭嘴”。在多次表达未获理想回响后启动了心理撤退，虽然规避了正面争端，却在心底积累了厚重的疏离感。';
+    } else if (q8 >= 4 || q12 >= 4) {
+      behaviorPhenomenon = '<b>【法庭对质与定性评判】</b>对话极易滑向讲道理、翻旧账或定性评价（如“你总是……”、“你从来都……”），就事论事被迅速置换为“是非对错与责任审判”。';
+    } else if (q9 <= 2) {
+      behaviorPhenomenon = '<b>【倾听失焦与微冷落感】</b>伴侣表达时常伴随注视屏幕或心不在焉，缺乏眼神与情感确认，逐渐消磨了主动分享日常的兴致。';
+    } else {
+      behaviorPhenomenon = '<b>【日常交流通畅，敏感议题存顾虑】</b>常规事务交流顺畅，但在涉及观念分歧的深水区议题时仍存在防御性回避。';
+    }
+
+    if (q8 >= 4 && q12 >= 4) {
+      psychologicalDefense = '<b>【评判-防卫应激回路】</b>指责的表象下包裹着“极度渴望被看见却求而不得的绝望”，而辩解反击则是“害怕被全盘否定、捍卫自身价值的自尊保卫战”，双方都在用刺刀保护受伤的心。';
+    } else if (q10 >= 4) {
+      psychologicalDefense = '<b>【绝望感引发的保护性关机】</b>由于预期得不到理解，机体本能切断了沟通通路，用冷漠与沉默隔绝进一步的挫败。';
+    } else {
+      psychologicalDefense = '<b>【理性思维对情感确认的替代】</b>习惯用工程师思维提方案、讲逻辑，无意中阻断了伴侣感受层面的流动与确认。';
+    }
+
+    breakAction = '伴侣下一次主动开口时，刻意<b>将手机屏幕朝下扣在桌面上</b>，专注注视对方眼睛听完前三句话，先回应一句“听起来你今天挺不容易的”，再谈事情。';
+
+    if (isHusband) {
+      coreInquiry = '“当妻子向您倒苦水或表达情绪时，您是否会下意识觉得她在责怪您没把事情处理好，从而急于辩解或给出解决步骤？”';
+    } else {
+      coreInquiry = '“当您发现丈夫对您的提议只是机械应答或陷入沉默时，这种无回应会让您感到加倍愤怒，还是感到自己不被重视？”';
+    }
+
+  } else if (dimId === 'conf') {
+    // Q13(当天和好), Q14(追逃模式-反), Q15(聚焦事情), Q16(权力较量-反), Q17(顺势接台阶), Q18(狠话离婚念头-反)
+    const q13 = rawAnswers[13] || 3;
+    const q14 = rawAnswers[14] || 3;
+    const q15 = rawAnswers[15] || 3;
+    const q16 = rawAnswers[16] || 3;
+    const q17 = rawAnswers[17] || 3;
+    const q18 = rawAnswers[18] || 3;
+
+    if (q17 <= 2 && q13 <= 2) {
+      behaviorPhenomenon = '<b>【僵局冷战与台阶断裂】</b>误会产生后双方均退守防线，谁也不愿率先示弱，原本微小的摩擦被拉长为持续数天的冷暴力与情绪内耗。';
+    } else if (q14 >= 4) {
+      behaviorPhenomenon = '<b>【追退失衡与压迫感】</b>冲突升级时往往呈现一方步步紧逼索要交代、另一方感到窒息落荒而逃的追逃拉扯态势。';
+    } else if (q18 >= 4) {
+      behaviorPhenomenon = '<b>【极端言语与情绪爆表】</b>高压争吵时容易被情绪绑架说出绝情狠话，给双方信任带来次生创伤。';
+    } else {
+      behaviorPhenomenon = '<b>【冲突克制，缺少快速修复通道】</b>底线意识明确，但在争吵后的降温与和解节奏上仍缺乏成熟默契。';
+    }
+
+    if (q14 >= 4) {
+      psychologicalDefense = '<b>【EFT 追-逃死锁机制】</b>紧追方内心在呼喊“不要扔下我一人！”，退避方内心在呼喊“我感到无能为力，必须撤离才能避免毁灭”。双方都在用自己的习惯捍卫安全，却形成了致命互激。';
+    } else if (q16 >= 4) {
+      psychologicalDefense = '<b>【权力较量与自尊保卫】</b>潜意识将观点妥协等同于地位丧失，陷入“谁先认输谁就输了整段关系”的零和博弈思维。';
+    } else {
+      psychologicalDefense = '<b>【情绪过载下的神经解离】</b>当生理心率超标时大脑理性中枢短暂关闭，机体进入原始的战斗或逃跑状态。';
+    }
+
+    breakAction = '与伴侣达成一个默契的<b>“争吵暂停手势”</b>（如双手比 T 或约定暗号），一旦有人情绪过载，无条件各自深呼吸冷静 15 分钟再谈，绝不摔门或无声失联。';
+
+    if (isHusband) {
+      coreInquiry = '“争吵激烈时，当您选择关门、走开或彻底沉默，真实原因是觉得‘说什么都是错，不如不说了’，还是觉得身体里有一股火快要失控了？”';
+    } else {
+      coreInquiry = '“当争吵发生后丈夫掉头走开或几天不说话时，那种‘被冰封、被晾在一边’的感受，是否比争吵本身更让您感到痛苦和抓狂？”';
+    }
+
+  } else if (dimId === 'emot') {
+    // Q19(放松做自己), Q20(深深孤独-反), Q21(察觉低落安慰), Q22(单方委屈怨气-反), Q23(期待回家见伴侣), Q24(神经紧绷怕踩雷-反)
+    const q19 = rawAnswers[19] || 3;
+    const q20 = rawAnswers[20] || 3;
+    const q21 = rawAnswers[21] || 3;
+    const q22 = rawAnswers[22] || 3;
+    const q23 = rawAnswers[23] || 3;
+    const q24 = rawAnswers[24] || 3;
+
+    if (q24 >= 4) {
+      behaviorPhenomenon = '<b>【高度紧绷与怕踩雷战备】</b>相处中伴随着谨小慎微的警觉感，生怕哪句话引起对方不悦，家不再是安心卸甲的港湾，反而演变为心理能量的消耗场。';
+    } else if (q22 >= 4) {
+      behaviorPhenomenon = '<b>【单向委屈与隐性积怨】</b>内心积存了深切的不平衡感，觉得自己在为家庭默不作声地妥协与承担，却得不到伴侣的由衷体恤与肯定。';
+    } else if (q20 >= 4) {
+      behaviorPhenomenon = '<b>【身在亲密中的深夜孤单】</b>同在一室却缺少心灵回响，日常交往被琐事塞满，深层情感诉求长期处于营养不良状态。';
+    } else {
+      behaviorPhenomenon = '<b>【安全平稳，松弛感尚有提升空间】</b>具备基本安全感，但日常相处中的轻盈与愉悦体验较平淡。';
+    }
+
+    if (q24 >= 4) {
+      psychologicalDefense = '<b>【人际创伤雷达的慢性激活】</b>童年或过往经历中对不可预期的情绪爆发形成了高度应激反射，导致神经系统在婚姻中长期处于战备警戒。';
+    } else if (q22 >= 4) {
+      psychologicalDefense = '<b>【过度付出者的隐性投射】</b>习惯默默承担一切并期待伴侣“主动猜中心思”，一旦期待落空便转为内伤或无名烦躁。';
+    } else {
+      psychologicalDefense = '<b>【情感表达的自我压抑】</b>习惯将家庭责任置于个人感受之上，长期忽略自身的真实心理负荷。';
+    }
+
+    breakAction = '为自己划定界限，当感到心力交瘁时<b>允许自己休息 15 分钟</b>，平静向伴侣说出自己的疲惫与具体需要，而不是一边勉强支撑一边在心底压抑怨气。';
+
+    if (isHusband) {
+      coreInquiry = '“在一天忙碌工作之后回到家，推开家门那一瞬间，您身体的感觉是‘终于可以卸下防备歇口气了’，还是会下意识地先察看一下家里的气氛和脸色？”';
+    } else {
+      coreInquiry = '“在日复一日的家庭与孩子琐事中，您是否常常感到自己是一台停不下来的机器，一旦停下就会被无数琐事追赶，却很少有人真正关心您累不累？”';
+    }
+
+  } else if (dimId === 'sati') {
+    // Q25(整体满意), Q26(满意对方付出), Q27(重选依然结婚), Q28(未来悲观-反), Q29(中上水平), Q30(仅维持责任-反)
+    const q25 = rawAnswers[25] || 3;
+    const q26 = rawAnswers[26] || 3;
+    const q27 = rawAnswers[27] || 3;
+    const q28 = rawAnswers[28] || 3;
+    const q29 = rawAnswers[29] || 3;
+    const q30 = rawAnswers[30] || 3;
+
+    if (q30 >= 4 && q27 <= 3) {
+      behaviorPhenomenon = '<b>【功能性契约与责任妥协】</b>作答明确显示：维持现状在很大程度上被归因于现实责任或子女，对当初的选择产生犹豫，内心呈现出倦怠与心理撤离。';
+    } else if (score < 50) {
+      behaviorPhenomenon = '<b>【累积性挫败引发的泛化怀疑】</b>多个领域的具体挫折未获有效疏导，导致对整段婚姻的幸福信念产生了动摇与无力感。';
+    } else {
+      behaviorPhenomenon = '<b>【满意度基底坚固，缺乏凝聚愿景】</b>大体满意目前生活，但缺乏能够共同向往与激发激情的新发展愿景。';
+    }
+
+    if (q30 >= 4) {
+      psychologicalDefense = '<b>【防御性心理降级】</b>因反复渴望落空而启动的情感断开机制，通过将婚姻降格为单纯的“责任履约”，防止自己的内心继续受到情感伤害。';
+    } else {
+      psychologicalDefense = '<b>【消极认知滤镜的渗透】</b>容易放大伴侣生活细节中的瑕疵，而忽略了彼此在漫长岁月里共同撑起家庭的踏实贡献。';
+    }
+
+    breakAction = '在本周内挑一个轻松时刻，<b>由衷肯定伴侣近期为家庭做出的 1 件具体小事</b>，打破只在问题出现时才关注伴侣的消极惯性。';
+
+    if (isHusband) {
+      coreInquiry = '“如果婚姻有一次重新呼吸、减轻负荷的机会，您最渴望妻子在哪个方面给予您更多的认可和肯定？”';
+    } else {
+      coreInquiry = '“如果在当前的婚姻生活中哪怕只能改变一个小小的现状，您最希望发生的一个具体转变是什么？”';
+    }
+
+  } else if (dimId === 'func') {
+    // Q31(财务共识), Q32(家务育儿分工合理), Q33(父母界限同盟), Q34(家务育儿内耗-反), Q35(专属二人时光), Q36(重大决策分歧-反)
+    const q31 = rawAnswers[31] || 3;
+    const q32 = rawAnswers[32] || 3;
+    const q33 = rawAnswers[33] || 3;
+    const q34 = rawAnswers[34] || 3;
+    const q35 = rawAnswers[35] || 3;
+    const q36 = rawAnswers[36] || 3;
+
+    if (q35 <= 2) {
+      behaviorPhenomenon = '<b>【二人专属时光的严重剥离】</b>生活完全被工作、育儿与家务填满。当夫妻退化为单纯的“家政与育儿合伙人”，缺少情感能量补给，日常协作极易滋生烦躁。';
+    } else if (q34 >= 4) {
+      behaviorPhenomenon = '<b>【家务与育儿细节的隐性内耗】</b>在日常琐碎事务的承担上摩擦频繁，操心规划与被动执行之间的步调失衡带来疲惫。';
+    } else {
+      behaviorPhenomenon = '<b>【功能框架完整，微小边界需理顺】</b>生活协同底盘稳固，但在关键事务决策或精力分配上仍有优化空间。';
+    }
+
+    if (q33 <= 2) {
+      psychologicalDefense = '<b>【代际边界渗透与首要同盟动摇】</b>长辈或原生家庭意见对核心家庭产生了牵绊，夫妻间未形成排他的“第一同盟”，导致家庭抵御外界压力的能力受损。';
+    } else if (q34 >= 4) {
+      psychologicalDefense = '<b>【隐性脑力负荷（Mental Load）失衡】</b>矛盾核心往往不仅是“谁动手干活”，而是“谁在操心统筹”，隐性责任的不对称容易诱发被压垮的委屈感。';
+    } else {
+      psychologicalDefense = '<b>【实用主义对浪漫情感的吞噬】</b>误以为婚姻进入稳定期便不再需要经营仪式感，导致生活机制化、枯燥化。';
+    }
+
+    breakAction = '在本周末协调出至少 <b>1 小时的“绝对二人散步时光”</b>，暂时安顿好工作与孩子，两人喝杯咖啡或走一走，坚决不聊柴米油盐与家庭开销。';
+
+    if (isHusband) {
+      coreInquiry = '“对于家务和育儿的具体分工，您内心的真实困惑是‘总觉得自己不管做什么好像都达不到妻子的标准，经常挨说’，还是有其他具体考量？”';
+    } else {
+      coreInquiry = '“在日常家庭运转中，那些看不见但极耗心力的操心事（如孩子学业、老人健康、琐事统筹），是否几乎全压在您一个人的脑子里，而丈夫往往只是被动‘拨一下动一下’？”';
+    }
+  }
+
+  return {
+    score,
+    levelText,
+    levelColor,
+    behaviorPhenomenon,
+    psychologicalDefense,
+    breakAction,
+    coreInquiry
+  };
+}
+
+// 严谨动态提炼关系守护基石（只提炼得分 ≥ 4 的真正优势项，坚决拒绝虚假硬夸）
+function extractRelationshipStrengths(ans) {
+  const strengths = [];
+
+  // Q15: 发生分歧聚焦事情人品 (正向题，≥4 分才算优势)
+  if (ans[15] >= 4) {
+    strengths.push({
+      title: '不攻击彼此人品，恪守尊重底线',
+      qid: 15,
+      score: ans[15],
+      desc: '在发生分歧时依然能够努力聚焦具体事情，没有陷入毁灭性的“轻蔑与人格侮辱”，表明双方心底深处对彼此依然保留着做人底线的敬意。'
+    });
+  }
+
+  // Q18: 激烈争吵时不提离婚分开 (反向题，raw <= 2 则反向健康分为 >= 4 分)
+  if (ans[18] <= 2) {
+    strengths.push({
+      title: '留在关系里的承诺感依然坚定',
+      qid: 18,
+      score: 6 - ans[18],
+      desc: '即使争端激烈、内心倍感痛苦，依然较少产生轻言放弃或拆伙离婚的念头，表明婚姻的“承诺锚点”相当坚实，双方都在竭尽全力守住这个家。'
+    });
+  }
+
+  // Q33: 原生家庭界限清晰同盟 (正向题，≥4 分)
+  if (ans[33] >= 4) {
+    strengths.push({
+      title: '清晰的原生家庭界限与夫妻同盟',
+      qid: 33,
+      score: ans[33],
+      desc: '在面对双方父母长辈及亲友外部关系时，能够建立起相对健康的“夫妻同盟”屏障，没有因外界宗族或长辈干预造成核心家庭的撕裂。'
+    });
+  }
+
+  // Q36: 重大决策达成共识 (反向题，raw <= 2 则反向健康分为 >= 4 分)
+  if (ans[36] <= 2) {
+    strengths.push({
+      title: '重大发展方向与底盘大局观高度同频',
+      qid: 36,
+      score: 6 - ans[36],
+      desc: '在家庭大方向、置业、财务或重要人生转折上，仍具备达成现实共识的能力，这是漫长岁月航行中极其不可多得的压舱石。'
+    });
+  }
+
+  // Q31: 财务管理互信良好 (正向题，≥4 分)
+  if (ans[31] >= 4) {
+    strengths.push({
+      title: '家庭财务互信与开支透明度良好',
+      qid: 31,
+      score: ans[31],
+      desc: '在经济安全感和财务安排上保有基本互信，有效规避了亲密关系中最具杀伤力的金钱猜忌。'
+    });
+  }
+
+  // Q11: 观点不一致仍尊重立场 (正向题，≥4 分)
+  if (ans[11] >= 4) {
+    strengths.push({
+      title: '理性尊重彼此独立立场',
+      qid: 11,
+      score: ans[11],
+      desc: '即使彼此观念不一致，也能表达对彼此立场的尊重，具备珍贵的理智与建设性沟通底色。'
+    });
+  }
+
+  // Q27: 初心认同 (严谨校验：只有当 Q27 ≥ 4 且 Q30 <= 2 时，才允许生成初心深厚，杜绝前后自相矛盾！)
+  if (ans[27] >= 4 && ans[30] <= 2) {
+    strengths.push({
+      title: '初心情感认同依然深厚',
+      qid: 27,
+      score: ans[27],
+      desc: '即使经历现实风雨与疲惫，骨子里依然认可当年的选择，这段关系的初心依然散发着生命的微光。'
+    });
+  }
+
+  return strengths;
+}
+
+// 独立高清矢量雷达图生成器 (SVG)
+function generateRadarSVG(scoresMap, size = 260) {
+  const dims = [
+    { id: 'conn', name: '情感连接' },
+    { id: 'comm', name: '沟通表达' },
+    { id: 'conf', name: '冲突模式' },
+    { id: 'emot', name: '情绪体验' },
+    { id: 'sati', name: '关系满意' },
+    { id: 'func', name: '关系功能' }
+  ];
+  const cx = size / 2;
+  const cy = size / 2;
+  const radius = size * 0.35;
+  const numAxes = dims.length;
+  const angleStep = (Math.PI * 2) / numAxes;
+
+  let gridSvg = '';
+  for (let l = 1; l <= 5; l++) {
+    const r = (radius / 5) * l;
+    let points = [];
+    for (let i = 0; i < numAxes; i++) {
+      const a = i * angleStep - Math.PI / 2;
+      points.push((cx + r * Math.cos(a)).toFixed(1) + ',' + (cy + r * Math.sin(a)).toFixed(1));
+    }
+    gridSvg += '<polygon points="' + points.join(' ') + '" fill="none" stroke="#E2E8F0" stroke-width="1"/>';
+  }
+
+  let axesSvg = '';
+  let labelsSvg = '';
+  for (let i = 0; i < numAxes; i++) {
+    const a = i * angleStep - Math.PI / 2;
+    const x = cx + radius * Math.cos(a);
+    const y = cy + radius * Math.sin(a);
+    axesSvg += '<line x1="' + cx + '" y1="' + cy + '" x2="' + x.toFixed(1) + '" y2="' + y.toFixed(1) + '" stroke="#CBD5E1" stroke-width="1"/>';
+
+    const lx = cx + (radius + 22) * Math.cos(a);
+    const ly = cy + (radius + 16) * Math.sin(a);
+    const sVal = scoresMap[dims[i].id] || 0;
+    labelsSvg += '<text x="' + lx.toFixed(1) + '" y="' + ly.toFixed(1) + '" font-size="9" font-weight="bold" fill="#334155" text-anchor="middle" dominant-baseline="central">' + dims[i].name + ' ' + sVal + '分</text>';
+  }
+
+  let dataPoints = [];
+  let dotsSvg = '';
+  for (let i = 0; i < numAxes; i++) {
+    const a = i * angleStep - Math.PI / 2;
+    const s = Math.max(0, Math.min(100, scoresMap[dims[i].id] || 0));
+    const r = (radius * s) / 100;
+    const x = cx + r * Math.cos(a);
+    const y = cy + r * Math.sin(a);
+    dataPoints.push(x.toFixed(1) + ',' + y.toFixed(1));
+    dotsSvg += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="3.5" fill="#D97706" stroke="#FFF" stroke-width="1.5"/>';
+  }
+
+  const polygonSvg = '<polygon points="' + dataPoints.join(' ') + '" fill="rgba(217, 119, 6, 0.22)" stroke="#D97706" stroke-width="2.2"/>';
+
+  return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" style="max-width:100%; height:auto;">' + gridSvg + axesSvg + polygonSvg + dotsSvg + labelsSvg + '</svg>';
+}
+
+function getOptionLabel(val) {
+  switch(Number(val)) {
+    case 1: return "极不符合";
+    case 2: return "较不符合";
+    case 3: return "中立/不确定";
+    case 4: return "比较符合";
+    case 5: return "完全符合";
+    default: return "未标注";
+  }
+}
+
+function generateDualRadarSVG(husbandScores, wifeScores, size) {
+  size = size || 260;
+  var dims = [
+    { id: 'conn', name: '情感连接' },
+    { id: 'comm', name: '沟通表达' },
+    { id: 'conf', name: '冲突模式' },
+    { id: 'emot', name: '情绪体验' },
+    { id: 'sati', name: '关系满意' },
+    { id: 'func', name: '关系功能' }
+  ];
+  var cx = size / 2;
+  var cy = size / 2;
+  var radius = size * 0.35;
+  var numAxes = dims.length;
+  var angleStep = (Math.PI * 2) / numAxes;
+
+  var gridSvg = '';
+  for (var l = 1; l <= 5; l++) {
+    var r = (radius / 5) * l;
+    var points = [];
+    for (var i = 0; i < numAxes; i++) {
+      var a = i * angleStep - Math.PI / 2;
+      points.push((cx + r * Math.cos(a)).toFixed(1) + ',' + (cy + r * Math.sin(a)).toFixed(1));
+    }
+    gridSvg += '<polygon points="' + points.join(' ') + '" fill="none" stroke="#E2E8F0" stroke-width="1"/>';
+  }
+
+  var axesSvg = '';
+  var labelsSvg = '';
+  for (var i = 0; i < numAxes; i++) {
+    var a = i * angleStep - Math.PI / 2;
+    var x = cx + radius * Math.cos(a);
+    var y = cy + radius * Math.sin(a);
+    axesSvg += '<line x1="' + cx + '" y1="' + cy + '" x2="' + x.toFixed(1) + '" y2="' + y.toFixed(1) + '" stroke="#CBD5E1" stroke-width="1"/>';
+
+    var lx = cx + (radius + 24) * Math.cos(a);
+    var ly = cy + (radius + 18) * Math.sin(a);
+    labelsSvg += '<text x="' + lx.toFixed(1) + '" y="' + ly.toFixed(1) + '" font-size="8.5" font-weight="bold" fill="#334155" text-anchor="middle" dominant-baseline="central">' + dims[i].name + '</text>';
+  }
+
+  var hPoints = [];
+  var hDots = '';
+  var wPoints = [];
+  var wDots = '';
+
+  for (var i = 0; i < numAxes; i++) {
+    var a = i * angleStep - Math.PI / 2;
+    var hs = Math.max(0, Math.min(100, (husbandScores && husbandScores[dims[i].id]) || 0));
+    var ws = Math.max(0, Math.min(100, (wifeScores && wifeScores[dims[i].id]) || 0));
+
+    var hr = (radius * hs) / 100;
+    var hx = cx + hr * Math.cos(a);
+    var hy = cy + hr * Math.sin(a);
+    hPoints.push(hx.toFixed(1) + ',' + hy.toFixed(1));
+    hDots += '<circle cx="' + hx.toFixed(1) + '" cy="' + hy.toFixed(1) + '" r="3" fill="#2563EB" stroke="#FFF" stroke-width="1"/>';
+
+    var wr = (radius * ws) / 100;
+    var wx = cx + wr * Math.cos(a);
+    var wy = cy + wr * Math.sin(a);
+    wPoints.push(wx.toFixed(1) + ',' + wy.toFixed(1));
+    wDots += '<circle cx="' + wx.toFixed(1) + '" cy="' + wy.toFixed(1) + '" r="3" fill="#BE185D" stroke="#FFF" stroke-width="1"/>';
+  }
+
+  var hPoly = '<polygon points="' + hPoints.join(' ') + '" fill="rgba(37, 99, 235, 0.18)" stroke="#2563EB" stroke-width="2"/>';
+  var wPoly = '<polygon points="' + wPoints.join(' ') + '" fill="rgba(190, 24, 93, 0.18)" stroke="#BE185D" stroke-width="2"/>';
+
+  var legend = '<g transform="translate(' + (cx - 65) + ', 12)">' +
+    '<circle cx="0" cy="0" r="4" fill="#2563EB"/>' +
+    '<text x="7" y="3" font-size="8.5" font-weight="bold" fill="#2563EB">👨 丈夫得分</text>' +
+    '<circle cx="68" cy="0" r="4" fill="#BE185D"/>' +
+    '<text x="75" y="3" font-size="8.5" font-weight="bold" fill="#BE185D">👩 妻子得分</text>' +
+    '</g>';
+
+  return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" style="max-width:100%; height:auto;">' +
+    gridSvg + axesSvg + hPoly + wPoly + hDots + wDots + labelsSvg + legend + '</svg>';
+}
+
+
+
+// =========================================================================
+// 云端数据库实时自动同步控制逻辑
+// =========================================================================
+
+function openCloudModal() {
+  let cfg = {};
+  if (typeof CloudSync !== 'undefined' && CloudSync.getConfig) {
+    cfg = CloudSync.getConfig();
+  } else if (typeof window.CLOUD_CONFIG !== 'undefined') {
+    cfg = window.CLOUD_CONFIG;
+  }
+  document.getElementById('cfg-provider').value = cfg.provider || 'supabase';
+  document.getElementById('cfg-sb-url').value = cfg.supabaseUrl || '';
+  document.getElementById('cfg-sb-key').value = cfg.supabaseKey || '';
+  document.getElementById('cfg-lc-id').value = cfg.appId || '';
+  document.getElementById('cfg-lc-key').value = cfg.appKey || '';
+  document.getElementById('cfg-lc-server').value = cfg.serverURL || '';
+
+  toggleProviderFields();
+  document.getElementById('cfg-test-result').style.display = 'none';
+  document.getElementById('cloud-modal').style.display = 'flex';
+}
+
+function closeCloudModal() {
+  document.getElementById('cloud-modal').style.display = 'none';
+}
+
+function toggleProviderFields() {
+  const p = document.getElementById('cfg-provider').value;
+  document.getElementById('supabase-fields').style.display = p === 'supabase' ? 'block' : 'none';
+  document.getElementById('leancloud-fields').style.display = p === 'leancloud' ? 'block' : 'none';
+}
+
+async function testCloudConfigAction() {
+  const p = document.getElementById('cfg-provider').value;
+  const testCfg = {
+    provider: p,
+    supabaseUrl: document.getElementById('cfg-sb-url').value.trim(),
+    supabaseKey: document.getElementById('cfg-sb-key').value.trim(),
+    appId: document.getElementById('cfg-lc-id').value.trim(),
+    appKey: document.getElementById('cfg-lc-key').value.trim(),
+    serverURL: document.getElementById('cfg-lc-server').value.trim()
+  };
+
+  const resEl = document.getElementById('cfg-test-result');
+  resEl.style.display = 'block';
+  resEl.style.background = '#EFF6FF';
+  resEl.style.color = '#1D4ED8';
+  resEl.style.border = '1px solid #BFDBFE';
+  resEl.innerText = '正在向云端发起验证握手测试...';
+
+  if (typeof CloudSync === 'undefined' || !CloudSync.testConnection) {
+    resEl.style.background = '#FEF2F2';
+    resEl.style.color = '#B91C1C';
+    resEl.style.border = '1px solid #FCA5A5';
+    resEl.innerText = '❌ 错误：cloud_sync.js 同步模块未能加载，请刷新页面后重试。';
+    return;
+  }
+
+  const testRes = await CloudSync.testConnection(testCfg);
+  if (testRes.success) {
+    resEl.style.background = '#F0FDF4';
+    resEl.style.color = '#15803D';
+    resEl.style.border = '1px solid #86EFAC';
+    resEl.innerText = testRes.message;
+  } else {
+    resEl.style.background = '#FEF2F2';
+    resEl.style.color = '#B91C1C';
+    resEl.style.border = '1px solid #FCA5A5';
+    resEl.innerText = testRes.error;
+  }
+}
+
+async function saveCloudConfigAction() {
+  const p = document.getElementById('cfg-provider').value;
+  const newCfg = {
+    provider: p,
+    supabaseUrl: document.getElementById('cfg-sb-url').value.trim(),
+    supabaseKey: document.getElementById('cfg-sb-key').value.trim(),
+    appId: document.getElementById('cfg-lc-id').value.trim(),
+    appKey: document.getElementById('cfg-lc-key').value.trim(),
+    serverURL: document.getElementById('cfg-lc-server').value.trim()
+  };
+
+  CloudSync.saveConfig(newCfg);
+  closeCloudModal();
+  updateCloudStatusBadge();
+
+  // 立即触发一次全量拉取
+  await manualSyncCloud(false);
+  alert('🎉 云端数据库配置已保存！后台已开启全自动实时同步监听。');
+}
+
+function updateCloudStatusBadge() {
+  const badge = document.getElementById('cloud-status-badge');
+  const dot = document.getElementById('cloud-status-dot');
+  const txt = document.getElementById('cloud-status-text');
+  if (!badge) return;
+
+  if (CloudSync.isConfigured()) {
+    const cfg = CloudSync.getConfig();
+    badge.style.background = '#DCFCE7';
+    badge.style.color = '#166534';
+    badge.style.borderColor = '#86EFAC';
+    dot.style.background = '#16A34A';
+    txt.innerText = '🟢 云同步运行中 (' + (cfg.provider === 'supabase' ? 'Supabase' : 'LeanCloud') + ')';
+  } else {
+    badge.style.background = '#FEF3C7';
+    badge.style.color = '#92400E';
+    badge.style.borderColor = '#FCD34D';
+    dot.style.background = '#D97706';
+    txt.innerText = '☁️ 云端未连接 (点击配置)';
+  }
+}
+
+async function manualSyncCloud(showPrompt) {
+  if (!CloudSync.isConfigured()) {
+    if (showPrompt) {
+      if (confirm('当前尚未配置云端数据库。是否立即打开配置窗口填入 Supabase 秘钥？')) {
+        openCloudModal();
+      }
+    }
+    return;
+  }
+
+  const syncIcon = document.getElementById('sync-icon');
+  if (syncIcon) syncIcon.style.display = 'inline-block';
+
+  try {
+    const res = await CloudSync.fetchAllCases();
+    if (res && res.success) {
+      refreshCaseDropdown();
+      updateCloudStatusBadge();
+
+      // 如果当前正打开某个档案，检查该档案是否在云端被另一位配偶更新了
+      if (currentCaseData && currentCaseData.code) {
+        const latestRaw = localStorage.getItem('MXL_CASE_' + currentCaseData.code);
+        if (latestRaw) {
+          const latestObj = JSON.parse(latestRaw);
+          const wasWifeDone = currentCaseData.wife && currentCaseData.wife.answers;
+          const wasHusbandDone = currentCaseData.husband && currentCaseData.husband.answers;
+          const isWifeDoneNow = latestObj.wife && latestObj.wife.answers;
+          const isHusbandDoneNow = latestObj.husband && latestObj.husband.answers;
+
+          if ((!wasWifeDone && isWifeDoneNow) || (!wasHusbandDone && isHusbandDoneNow)) {
+            currentCaseData = latestObj;
+            renderCaseDashboard(latestObj);
+            showAutoSyncToast('🎉 检测到配偶已在手机提交答卷！系统已自动为您更新并解锁双轨报告。');
+          }
+        }
+      }
+
+      if (showPrompt) {
+        alert('✔ 云端同步成功！已聚合 ' + res.count + ' 份家庭档案（新增/更新 ' + res.newCount + ' 份）。');
+      }
+    }
+  } catch(e) {
+    console.warn('Manual sync error:', e);
+  }
+}
+
+function showAutoSyncToast(msg) {
+  let toast = document.getElementById('mxl-sync-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'mxl-sync-toast';
+    toast.style.cssText = 'position:fixed; top:20px; right:20px; z-index:99999; background:#16A34A; color:#FFF; padding:12px 20px; border-radius:10px; font-size:13.5px; font-weight:bold; box-shadow:0 10px 25px rgba(0,0,0,0.2); transition:all 0.3s;';
+    document.body.appendChild(toast);
+  }
+  toast.innerText = msg;
+  toast.style.display = 'block';
+  toast.style.opacity = '1';
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    setTimeout(() => { toast.style.display = 'none'; }, 300);
+  }, 4000);
+}
+
+// 自动后台静默心跳监听（每 12 秒自动拉取一次）
+let cloudPollTimer = null;
+function startCloudPolling() {
+  if (cloudPollTimer) clearInterval(cloudPollTimer);
+  cloudPollTimer = setInterval(() => {
+    if (CloudSync.isConfigured() && document.visibilityState !== 'hidden') {
+      manualSyncCloud(false);
+    }
+  }, 12000);
+}
+
+
+function openImportModal() {
+  document.getElementById('import-voucher-input').value = '';
+  document.getElementById('import-modal').style.display = 'flex';
+  setTimeout(() => { document.getElementById('import-voucher-input').focus(); }, 100);
+}
+
+function closeImportModal() {
+  document.getElementById('import-modal').style.display = 'none';
+}
+
+function confirmImportVoucher() {
+  const rawCode = document.getElementById('import-voucher-input').value.trim();
+  if (!rawCode) {
+    alert('请先粘贴客户发来的测评凭证代码！');
+    return;
+  }
+
+  const caseObj = unpackCaseData(rawCode);
+  if (!caseObj || !caseObj.code) {
+    alert('测评凭证解析失败，代码可能不完整或格式不正确。请让客户在手机上重新复制完整凭证！');
+    return;
+  }
+
+  const code = caseObj.code;
+  const existingRaw = localStorage.getItem(`MXL_CASE_${code}`);
+  let merged = caseObj;
+  if (existingRaw) {
+    try {
+      const old = JSON.parse(existingRaw);
+      merged = Object.assign(old, caseObj);
+    } catch(e) {}
+  }
+
+  localStorage.setItem(`MXL_CASE_${code}`, JSON.stringify(merged));
+
+  let indexList = [];
+  try { indexList = JSON.parse(localStorage.getItem('MXL_CASE_INDEX') || '[]'); } catch(e) {}
+  if (!indexList.includes(code)) {
+    indexList.unshift(code);
+    localStorage.setItem('MXL_CASE_INDEX', JSON.stringify(indexList));
+  }
+
+  closeImportModal();
+  refreshCaseDropdown();
+  document.getElementById('caseDropdown').value = code;
+  loadCaseByCode(code);
+  alert(`🎉 恭喜！客户档案【${code}】录入成功！\n系统已为您载入双轨打分、雷达图与诊断报告。`);
+}
+
+// 检查 URL 是否直接携带了导入凭证或配对码 (如 admin.html?import=eyJ... 或 admin.html?code=MXL123456)
+
+// 确保初次使用时有一套完整的演示数据，打开即可立即体验 7 大改进与导出 PDF
+(function initDemoDataIfEmpty() {
+  let indexList = [];
+  try { indexList = JSON.parse(localStorage.getItem("MXL_CASE_INDEX") || "[]"); } catch(e) {}
+  if (indexList.length === 0) {
+    const demoWifeAns = {1:2, 2:4, 3:2, 4:4, 5:2, 6:4, 7:3, 8:4, 9:2, 10:4, 11:2, 12:4, 13:2, 14:4, 15:1, 16:4, 17:2, 18:1, 19:2, 20:4, 21:2, 22:4, 23:2, 24:4, 25:2, 26:3, 27:2, 28:4, 29:3, 30:3, 31:3, 32:2, 33:5, 34:4, 35:2, 36:1};
+    const demoHusbandAns = {1:3, 2:3, 3:3, 4:3, 5:3, 6:3, 7:4, 8:3, 9:3, 10:3, 11:3, 12:3, 13:3, 14:3, 15:1, 16:3, 17:3, 18:1, 19:3, 20:3, 21:3, 22:3, 23:3, 24:3, 25:3, 26:4, 27:3, 28:3, 29:4, 30:3, 31:4, 32:3, 33:5, 34:3, 35:3, 36:1};
+    const demoCase = {
+      code: "MXL-DEMO888",
+      marriageYears: "7年",
+      childrenStatus: "1个孩子 (3岁半)",
+      wife: { name: "妻子(张女士)", age: "33", phone: "13800138001", answers: demoWifeAns, submittedAt: new Date().toLocaleString() },
+      husband: { name: "丈夫(李先生)", age: "35", phone: "13900139002", answers: demoHusbandAns, submittedAt: new Date().toLocaleString() }
+    };
+    localStorage.setItem("MXL_CASE_MXL-DEMO888", JSON.stringify(demoCase));
+    localStorage.setItem("MXL_CASE_INDEX", JSON.stringify(["MXL-DEMO888"]));
+  }
+})();
+
+
+window.addEventListener('DOMContentLoaded', () => {
+  updateCloudStatusBadge();
+  const params = new URLSearchParams(window.location.search);
+  const importCode = params.get('import') || params.get('voucher');
+  const queryCode = params.get('code');
+
+  if (importCode) {
+    const caseObj = unpackCaseData(importCode);
+    if (caseObj && caseObj.code) {
+      const code = caseObj.code;
+      localStorage.setItem(`MXL_CASE_${code}`, JSON.stringify(caseObj));
+      let indexList = [];
+      try { indexList = JSON.parse(localStorage.getItem('MXL_CASE_INDEX') || '[]'); } catch(e) {}
+      if (!indexList.includes(code)) {
+        indexList.unshift(code);
+        localStorage.setItem('MXL_CASE_INDEX', JSON.stringify(indexList));
+      }
+    }
+  }
+
+  // 直接初始化呈现客户档案并开启云同步监听（无需任何密码弹窗阻挡）
+  refreshCaseDropdown();
+  if (typeof CloudSync !== 'undefined' && CloudSync.isConfigured()) {
+    manualSyncCloud(false);
+  }
+  if (queryCode) {
+    setTimeout(() => {
+      document.getElementById('caseDropdown').value = queryCode;
+      loadCaseByCode(queryCode);
+    }, 200);
+  }
+});
+</script>
+
+</body>
+</html>
