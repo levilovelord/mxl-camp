@@ -468,6 +468,20 @@
 
   <!-- 作答主界面 -->
   <div id="survey-main">
+    <!-- 检测到历史答卷便签提示 -->
+    <div id="resume-case-banner" style="display:none; background:#FFFBEB; border:1.5px solid #F59E0B; border-radius:14px; padding:14px 16px; margin-bottom:16px; text-align:left; box-shadow:0 4px 12px rgba(217,119,6,0.1);">
+      <div style="font-size:14.5px; font-weight:700; color:#92400E; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+        <span>🔔</span> <span>检测到您在此设备上已有已完成的测评档案（<span id="resume-case-code" style="font-family:monospace; color:#B45309;"></span>）</span>
+      </div>
+      <div style="font-size:12.5px; color:#78350F; line-height:1.6; margin-bottom:10px;">
+        您的答卷已完整保存在本机。如需查看结果、复制凭证链接发给咨询师老师，请直接点击下方按钮：
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button type="button" onclick="resumeSubmittedCase()" style="flex:1; background:#D97706; color:#FFF; border:none; border-radius:8px; padding:9px 12px; font-size:13px; font-weight:700; cursor:pointer;">📋 调出我的答卷凭证并发送</button>
+        <button type="button" onclick="document.getElementById('resume-case-banner').style.display='none'" style="background:transparent; color:#92400E; border:1px solid #D97706; border-radius:8px; padding:9px 12px; font-size:12.5px; cursor:pointer;">开启新测评</button>
+      </div>
+    </div>
+
     <div class="hero-card">
       <h1>慕喜乐夫妻营 · 婚姻关系专业评估</h1>
       <p>六大维度系统检视 ｜ 发现情感温差 ｜ 解锁亲密密码</p>
@@ -578,7 +592,7 @@
     
     <!-- 隐藏系统字段，确保原有JS逻辑正常运作无报错 -->
     <span id="done-order-id" style="display:none;"></span>
-    <div id="cloud-sync-status-notice" style="display:none !important;"><span id="cloud-sync-status-text"></span></div>
+    <div id="cloud-sync-status-notice" style="display:none; font-size:12.5px; border-radius:10px; padding:10px 14px; margin:14px 0; text-align:left;"><span id="cloud-sync-status-text"></span></div>
     <div id="unified-share-link" style="display:none;"></div>
     <span id="unified-card-title" style="display:none;"></span>
     <span id="unified-card-desc" style="display:none;"></span>
@@ -592,7 +606,8 @@
         亲密关系是双人舞，伴侣的参与能呈现更客观的双向视角。点击下方按钮即可复制答题链接发送给TA：
       </p>
       <div>
-        <button class="share-btn" style="width:100%; margin:0; background:#D97706; box-shadow:0 3px 10px rgba(217,119,6,0.25);" onclick="copyUnifiedLink('partner')">🔗 复制链接发送给伴侣</button>
+        <button class="share-btn" style="width:100%; margin:0 0 10px 0; background:#D97706; box-shadow:0 3px 10px rgba(217,119,6,0.25);" onclick="copyUnifiedLink('partner')">🔗 复制链接发送给伴侣</button>
+        <button class="share-btn" style="width:100%; margin:0; background:#78350F; font-size:13px; opacity:0.92;" onclick="copyUnifiedLink('consultant')">📋 复制我的答卷链接发给咨询师</button>
       </div>
     </div>
 
@@ -601,8 +616,11 @@
       <div style="font-size:15.5px; font-weight:800; color:#166534; margin-bottom:4px;">
         🎉 您与伴侣均已完成测评！
       </div>
-      <div style="font-size:12.5px; color:#15803D; line-height:1.6;">
-        双人答卷已成功合并。咨询师正在为您们生成深度体检对比报告，添加下方官方微信即可预约专业解读。
+      <div style="font-size:13px; color:#15803D; line-height:1.6; margin-bottom:12px;">
+        双人答卷已成功合并。专属咨询师正在为您们生成深度体检对比报告。您可以直接复制凭证链接发给老师，或添加下方官方微信预约专业解读：
+      </div>
+      <div>
+        <button class="share-btn" style="width:100%; margin:0; background:#16A34A; color:#FFF; font-weight:bold; box-shadow:0 3px 10px rgba(22,163,74,0.25);" onclick="copyUnifiedLink('both')">📋 复制双人答卷链接发给咨询师</button>
       </div>
     </div>
 
@@ -876,7 +894,11 @@ var CloudSync = (typeof window !== "undefined" && window.CloudSync) ? window.Clo
       return { success: true, count: cases.length, newCount: newCount, cases: cases };
     } catch(err) {
       console.warn("Cloud fetch failed:", err);
-      return { success: false, error: err.message };
+      let errMsg = err.message || "";
+      if (errMsg.includes("fetch") || errMsg.includes("NetworkError") || errMsg.includes("Failed")) {
+        errMsg = "云端未响应 (Failed to fetch)。通常由于 Supabase 免费版 7 天未访问自动休眠，请登录 supabase.com 点击 Restore 唤醒恢复！";
+      }
+      return { success: false, error: errMsg };
     }
   },
 
@@ -1837,7 +1859,88 @@ window.addEventListener('DOMContentLoaded', () => {
 
   renderAllQuestions();
   updateProgress();
+  checkAndShowResumeBanner();
 });
+
+function checkAndShowResumeBanner() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    // 如果URL没有携带伴侣注入数据，检查本地是否已有历史完成记录
+    const urlCode = params.get('code');
+    let targetCode = urlCode || currentPairCode;
+
+    // 先检查当前配对码
+    let raw = localStorage.getItem('MXL_CASE_' + targetCode);
+    if (!raw) {
+      // 检查索引列表中的最近一份
+      const indexList = JSON.parse(localStorage.getItem('MXL_CASE_INDEX') || '[]');
+      if (indexList.length > 0) {
+        targetCode = indexList[0];
+        raw = localStorage.getItem('MXL_CASE_' + targetCode);
+      }
+    }
+
+    if (raw) {
+      const c = JSON.parse(raw);
+      const isDone = (c.wife && c.wife.answers && Object.keys(c.wife.answers).length >= 36) ||
+                     (c.husband && c.husband.answers && Object.keys(c.husband.answers).length >= 36);
+      if (isDone) {
+        const banner = document.getElementById('resume-case-banner');
+        if (banner) {
+          document.getElementById('resume-case-code').innerText = targetCode;
+          banner.style.display = 'block';
+        }
+      }
+    }
+  } catch(e) {}
+}
+
+function resumeSubmittedCase() {
+  const code = document.getElementById('resume-case-code').innerText || currentPairCode;
+  const raw = localStorage.getItem('MXL_CASE_' + code);
+  if (!raw) return;
+  try {
+    const existingCase = JSON.parse(raw);
+    const role = (existingCase.husband && existingCase.husband.answers && Object.keys(existingCase.husband.answers).length >= 36) ? 'husband' : 'wife';
+    const otherRole = role === 'wife' ? 'husband' : 'wife';
+    const name = (existingCase[role] && existingCase[role].name) ? existingCase[role].name : (role === 'wife' ? '妻子' : '丈夫');
+    const userAns = (existingCase[role] && existingCase[role].answers) ? existingCase[role].answers : {};
+
+    document.getElementById('survey-main').style.display = 'none';
+    document.getElementById('success-view').style.display = 'block';
+    document.getElementById('done-order-id').innerText = code;
+
+    renderClientInstantReport(role, name, userAns);
+
+    const isOtherDone = existingCase[otherRole] && existingCase[otherRole].answers && Object.keys(existingCase[otherRole].answers).length >= 36;
+    const voucherCode = packCaseData(existingCase);
+    const currentOrigin = window.location.origin + window.location.pathname;
+    const unifiedLink = currentOrigin + '?code=' + code + '&role=' + otherRole + '&d=' + encodeURIComponent(voucherCode);
+    
+    const linkBox = document.getElementById('unified-share-link');
+    if (linkBox) linkBox.innerText = unifiedLink;
+
+    const partnerInviteBox = document.getElementById('partner-invite-box');
+    const bothDoneBox = document.getElementById('section-both-done');
+
+    if (isOtherDone) {
+      if (bothDoneBox) bothDoneBox.style.display = 'block';
+      if (partnerInviteBox) partnerInviteBox.style.display = 'none';
+    } else {
+      if (bothDoneBox) bothDoneBox.style.display = 'none';
+      if (partnerInviteBox) partnerInviteBox.style.display = 'block';
+    }
+
+    // 尝试再次同步到云端
+    if (typeof CloudSync !== 'undefined' && CloudSync.isConfigured()) {
+      CloudSync.saveCase(existingCase);
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch(e) {
+    console.error('resume error:', e);
+  }
+}
 
 function renderAllQuestions() {
   const container = document.getElementById('questions-list');
@@ -2265,18 +2368,38 @@ function submitSurvey() {
   if (typeof CloudSync !== 'undefined' && CloudSync.isConfigured()) {
     const syncEl = document.getElementById('cloud-sync-status-notice');
     const syncTxt = document.getElementById('cloud-sync-status-text');
-    if (syncEl) syncEl.style.display = 'block';
-    if (syncTxt) syncTxt.innerText = '正在加密同步至咨询中心云端档案库...';
+    if (syncEl) {
+      syncEl.style.display = 'block';
+      syncEl.style.background = '#EFF6FF';
+      syncEl.style.color = '#1D4ED8';
+      syncEl.style.border = '1px solid #BFDBFE';
+    }
+    if (syncTxt) syncTxt.innerText = '🔄 正在加密同步至咨询中心云端档案库...';
 
     CloudSync.saveCase(existingCase).then(res => {
       if (res && res.success) {
+        if (syncEl) {
+          syncEl.style.background = '#F0FDF4';
+          syncEl.style.color = '#15803D';
+          syncEl.style.border = '1px solid #86EFAC';
+        }
         if (syncTxt) syncTxt.innerText = '✔ 答卷已实时加密同步至云端数据库！咨询师后台电脑已自动刷新呈现。';
       } else {
-        if (syncTxt) syncTxt.innerText = '⚠️ 云端同步响应稍慢，您亦可直接复制下方凭证链接发给咨询师。';
+        if (syncEl) {
+          syncEl.style.background = '#FFFBEB';
+          syncEl.style.color = '#92400E';
+          syncEl.style.border = '1px solid #FCD34D';
+        }
+        if (syncTxt) syncTxt.innerText = '💡 云端响应稍慢，您可点击下方「复制答卷链接发给咨询师」直接发给微信客服。';
       }
     }).catch(e => {
       console.warn('Cloud sync error:', e);
-      if (syncTxt) syncTxt.innerText = '⚠️ 云端连接超时，您可直接复制下方凭证链接发给咨询师。';
+      if (syncEl) {
+        syncEl.style.background = '#FFFBEB';
+        syncEl.style.color = '#92400E';
+        syncEl.style.border = '1px solid #FCD34D';
+      }
+      if (syncTxt) syncTxt.innerText = '💡 请点击下方「复制答卷链接发给咨询师」直接发送给微信客服wymone3即可。';
     });
   }
 
@@ -2303,16 +2426,21 @@ function submitSurvey() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// 伴侣答题链接一键复制
+// 伴侣答题链接 / 咨询师凭证一键复制
 function copyUnifiedLink(type) {
   const linkBox = document.getElementById('unified-share-link');
   const link = linkBox ? linkBox.innerText : '';
   if (!link) { alert('暂无链接数据'); return; }
 
+  let msg = '✔ 伴侣答题链接已复制成功！\n\n请直接打开微信粘贴发送给TA。TA点开即可直接参与测评，双方答卷将自动合为一体！';
+  if (type === 'consultant' || type === 'both') {
+    msg = '✔ 测评答卷专属链接已复制成功！\n\n请直接打开微信粘贴发送给官方客服【wymone3】。咨询师在后台点击即可调阅完整报告！';
+  }
+
   navigator.clipboard.writeText(link).then(() => {
-    alert('✔ 伴侣答题链接已复制成功！\n\n请直接打开微信粘贴发送给TA。TA点开即可直接参与测评，双方答卷将自动合为一体！');
+    alert(msg);
   }).catch(() => {
-    prompt('请长按或复制下方链接发送给伴侣：', link);
+    prompt('请长按或复制下方链接发送：', link);
   });
 }
 

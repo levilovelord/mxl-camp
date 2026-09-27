@@ -238,7 +238,11 @@ var CloudSync = (typeof window !== "undefined" && window.CloudSync) ? window.Clo
       return { success: true, count: cases.length, newCount: newCount, cases: cases };
     } catch(err) {
       console.warn("Cloud fetch failed:", err);
-      return { success: false, error: err.message };
+      let errMsg = err.message || "";
+      if (errMsg.includes("fetch") || errMsg.includes("NetworkError") || errMsg.includes("Failed")) {
+        errMsg = "云端未响应 (Failed to fetch)。通常由于 Supabase 免费版 7 天未访问自动休眠，请登录 supabase.com 点击 Restore 唤醒恢复！";
+      }
+      return { success: false, error: errMsg };
     }
   },
 

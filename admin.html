@@ -697,13 +697,13 @@ create policy "Public Access" on mxl_cases for all using (true) with check (true
 <div id="import-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(15,23,42,0.7); z-index:9999; align-items:center; justify-content:center;">
   <div style="background:#FFF; width:90%; max-width:540px; border-radius:18px; padding:24px; box-shadow:0 20px 45px rgba(0,0,0,0.3);">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-      <h3 style="font-size:17px; color:#1E293B;">📥 粘贴客户测评凭证码录入</h3>
+      <h3 style="font-size:17px; color:#1E293B;">📥 录入客户答卷（支持整条链接或凭证代码）</h3>
       <button class="btn" style="background:#F1F5F9; color:#475569;" onclick="closeImportModal()">✖ 关闭</button>
     </div>
-    <p style="font-size:12.5px; color:#64748B; line-height:1.5; margin-bottom:12px;">
-      当客户在手机提交后，会将一串加密凭证发送给客服微信（wymone3）。请将客户发来的代码粘贴在下方输入框中，系统将立即为您还原完整 36 题打分与诊断报告并存入数据库：
+    <p style="font-size:12.5px; color:#64748B; line-height:1.6; margin-bottom:12px;">
+      支持直接粘贴客户分享的<b>整条测评链接</b>（如 <code>https://...?code=...&d=...</code>）或单独的加密凭证代码。系统将立即为您还原完整 36 题打分与全景诊断报告并存入数据库：
     </p>
-    <textarea id="import-voucher-input" rows="5" placeholder="请在此粘贴客户发来的测评凭证代码（如 eyJjIjoiTVhMOT...）" style="width:100%; border:1px solid #CBD5E1; border-radius:10px; padding:10px; font-size:12px; font-family:monospace; resize:none; margin-bottom:14px; box-sizing:border-box;"></textarea>
+    <textarea id="import-voucher-input" rows="5" placeholder="请在此直接粘贴客户发来的整条答卷链接，或单独的凭证代码（如 eyJjIjoiTVhMOT...）" style="width:100%; border:1px solid #CBD5E1; border-radius:10px; padding:10px; font-size:12px; font-family:monospace; resize:none; margin-bottom:14px; box-sizing:border-box;"></textarea>
     <div style="display:flex; justify-content:flex-end; gap:10px;">
       <button class="btn" style="background:#F1F5F9; color:#475569;" onclick="closeImportModal()">取消</button>
       <button class="btn btn-primary" style="padding:10px 22px;" onclick="confirmImportVoucher()">立即解析并调取档案</button>
@@ -1001,7 +1001,11 @@ var CloudSync = (typeof window !== "undefined" && window.CloudSync) ? window.Clo
       return { success: true, count: cases.length, newCount: newCount, cases: cases };
     } catch(err) {
       console.warn("Cloud fetch failed:", err);
-      return { success: false, error: err.message };
+      let errMsg = err.message || "";
+      if (errMsg.includes("fetch") || errMsg.includes("NetworkError") || errMsg.includes("Failed")) {
+        errMsg = "云端未响应 (Failed to fetch)。通常由于 Supabase 免费版 7 天未访问自动休眠，请登录 supabase.com 点击 Restore 唤醒恢复！";
+      }
+      return { success: false, error: errMsg };
     }
   },
 
@@ -3110,25 +3114,53 @@ async function saveCloudConfigAction() {
   alert('🎉 云端数据库配置已保存！后台已开启全自动实时同步监听。');
 }
 
-function updateCloudStatusBadge() {
+let currentCloudStatus = 'checking'; // 'connected' | 'error' | 'unconfigured' | 'checking'
+let currentCloudErrorMsg = '';
+
+function updateCloudStatusBadge(state, detail) {
   const badge = document.getElementById('cloud-status-badge');
   const dot = document.getElementById('cloud-status-dot');
   const txt = document.getElementById('cloud-status-text');
   if (!badge) return;
 
-  if (CloudSync.isConfigured()) {
-    const cfg = CloudSync.getConfig();
-    badge.style.background = '#DCFCE7';
-    badge.style.color = '#166534';
-    badge.style.borderColor = '#86EFAC';
-    dot.style.background = '#16A34A';
-    txt.innerText = '🟢 云同步运行中 (' + (cfg.provider === 'supabase' ? 'Supabase' : 'LeanCloud') + ')';
-  } else {
+  if (state) currentCloudStatus = state;
+  if (detail !== undefined) currentCloudErrorMsg = detail;
+
+  if (!CloudSync.isConfigured()) {
+    currentCloudStatus = 'unconfigured';
     badge.style.background = '#FEF3C7';
     badge.style.color = '#92400E';
     badge.style.borderColor = '#FCD34D';
     dot.style.background = '#D97706';
     txt.innerText = '☁️ 云端未连接 (点击配置)';
+    badge.title = '尚未配置云端数据库参数';
+    return;
+  }
+
+  const cfg = CloudSync.getConfig();
+  const providerName = cfg.provider === 'supabase' ? 'Supabase' : 'LeanCloud';
+
+  if (currentCloudStatus === 'connected') {
+    badge.style.background = '#DCFCE7';
+    badge.style.color = '#166534';
+    badge.style.borderColor = '#86EFAC';
+    dot.style.background = '#16A34A';
+    txt.innerText = '🟢 云同步正常 (' + providerName + ')';
+    badge.title = '云端数据库正常通信中，每12秒静默心跳监听';
+  } else if (currentCloudStatus === 'error') {
+    badge.style.background = '#FEE2E2';
+    badge.style.color = '#991B1B';
+    badge.style.borderColor = '#FCA5A5';
+    dot.style.background = '#DC2626';
+    txt.innerText = '🔴 云端休眠/离线 (点击排查)';
+    badge.title = currentCloudErrorMsg || '云端通信失败或数据库已休眠，点击查看解决方案';
+  } else {
+    badge.style.background = '#E0F2FE';
+    badge.style.color = '#075985';
+    badge.style.borderColor = '#7DD3FC';
+    dot.style.background = '#0284C7';
+    txt.innerText = '🔄 云同步检测中...';
+    badge.title = '正在连接云端数据库...';
   }
 }
 
@@ -3148,8 +3180,8 @@ async function manualSyncCloud(showPrompt) {
   try {
     const res = await CloudSync.fetchAllCases();
     if (res && res.success) {
+      updateCloudStatusBadge('connected');
       refreshCaseDropdown();
-      updateCloudStatusBadge();
 
       // 如果当前正打开某个档案，检查该档案是否在云端被另一位配偶更新了
       if (currentCaseData && currentCaseData.code) {
@@ -3172,9 +3204,21 @@ async function manualSyncCloud(showPrompt) {
       if (showPrompt) {
         alert('✔ 云端同步成功！已聚合 ' + res.count + ' 份家庭档案（新增/更新 ' + res.newCount + ' 份）。');
       }
+    } else {
+      const errMsg = (res && res.error) ? res.error : '连接超时或网络异常';
+      updateCloudStatusBadge('error', errMsg);
+      if (showPrompt) {
+        alert('⚠️ 云端同步未成功：' + errMsg + '\n\n【核心排查原因】：\n1. Supabase 免费版若连续 7 天无访问，会被官方自动休眠（报错 Failed to fetch）。请登录 supabase.com 控制台点击「Restore」一键唤醒即可恢复！\n2. 紧急调阅：让客户将手机答题完成页的分享链接发送给您，点击顶部【🗃️ 导入凭证】粘贴，即可立刻加载完整报告！');
+      }
     }
   } catch(e) {
     console.warn('Manual sync error:', e);
+    updateCloudStatusBadge('error', e.message);
+    if (showPrompt) {
+      alert('⚠️ 云端通信异常：' + e.message + '\n\n请检查网络连接或登录 supabase.com 确认项目未被休眠。');
+    }
+  } finally {
+    if (syncIcon) syncIcon.style.display = 'none';
   }
 }
 
@@ -3279,9 +3323,9 @@ function confirmImportVoucher() {
 
 
 window.addEventListener('DOMContentLoaded', () => {
-  updateCloudStatusBadge();
+  updateCloudStatusBadge('checking');
   const params = new URLSearchParams(window.location.search);
-  const importCode = params.get('import') || params.get('voucher');
+  const importCode = params.get('import') || params.get('voucher') || params.get('d');
   const queryCode = params.get('code');
 
   if (importCode) {
@@ -3295,6 +3339,12 @@ window.addEventListener('DOMContentLoaded', () => {
         indexList.unshift(code);
         localStorage.setItem('MXL_CASE_INDEX', JSON.stringify(indexList));
       }
+      setTimeout(() => {
+        refreshCaseDropdown();
+        document.getElementById('caseDropdown').value = code;
+        loadCaseByCode(code);
+        showAutoSyncToast('🎉 成功调阅客户档案【' + code + '】！');
+      }, 150);
     }
   }
 
@@ -3302,8 +3352,11 @@ window.addEventListener('DOMContentLoaded', () => {
   refreshCaseDropdown();
   if (typeof CloudSync !== 'undefined' && CloudSync.isConfigured()) {
     manualSyncCloud(false);
+    startCloudPolling();
+  } else {
+    updateCloudStatusBadge('unconfigured');
   }
-  if (queryCode) {
+  if (queryCode && !importCode) {
     setTimeout(() => {
       document.getElementById('caseDropdown').value = queryCode;
       loadCaseByCode(queryCode);
